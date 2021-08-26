@@ -18,7 +18,7 @@ class CreateDesksTable extends Migration
             $table->unsignedBigInteger('sector_id')->nullable();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->enum('status', ['enable', 'disable'])->default('enable');
+            $table->boolean('is_enable')->default('1');
             $table->timestamps();
 
             $table->foreign('sector_id')->references('id')->on('sectors')->onDelete('cascade')->onUpdate('cascade');

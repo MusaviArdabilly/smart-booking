@@ -65,11 +65,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        //role default supposed to be user, but 1st user need to be admin
+        $userList = User::all();
+        $userCount = $userList->count();
+        if ($userCount == 0)
+            $role = "admin";
+        else
+            $role = "user";
+
         return User::create([
             'name' => $data['name'],
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role' => $role,
         ]);
     }
 }

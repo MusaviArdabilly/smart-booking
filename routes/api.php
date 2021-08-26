@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,14 @@ use App\Http\Controllers\Api\AuthController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+Route::get('floor/list', [ListController::class, 'listFloor']);
+
+// Route::get('floor/{floor}/sector/list', [ListController::class, 'listSector']);
+// Route::get('floor/{floor}/sector/{sector}/desk/list', [ListController::class, 'listDesk']);
+
+Route::get('sector/{floor}/list', [ListController::class, 'listSector']);
+Route::get('desk/{sector}/list', [ListController::class, 'listDesk']);
 
 // Route::middleware('auth:api')->group(function () {
 //     // Route::resource('floor', FloorControllers::class);
