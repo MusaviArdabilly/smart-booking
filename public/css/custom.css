@@ -1,0 +1,85 @@
+.customsidebar {
+    width: 12rem !important;
+}
+
+.btn-outline-secondary:hover {
+    color: #6c757d;
+    background-color: #e3e3e3 !important;
+    text-decoration: none;
+}
+
+.navbar-fixed-top {
+    background-color: #4e73df;
+}
+
+.nav-link-wrapper > a {
+    color: #fff;
+    padding: 0.75rem 1rem;
+    margin-top: 50px;
+}
+
+.nav-link-wrapper > a:hover {
+    color: #4e73df;
+    background-color: white;
+    border-color: #fff;
+    border-radius: 10rem;
+    padding: 0.75rem 1rem;
+    margin-top: 50px;
+    transition: 0.5s;
+    text-decoration: none;
+}
+
+.profile-wrapper {
+    background-color: #4e73df;
+}
+
+.img-landing-page {
+    width: 90px;
+    height: 90px;
+}
+
+.btn-white:link {
+    color: black;
+    text-decoration: none;
+    background-color: white;
+    border-color: #fff;
+    border-radius: 10rem;
+    padding: 0.75rem 1rem;
+    margin-top: 50px;
+}
+
+.form-login {
+    border-radius: 10rem;
+    padding: 1.5rem 1rem;
+}
+
+.btn-login {
+    padding: 0.375rem 2rem;
+    border-radius: 10rem;
+}
+
+/* display this row with flex and use wrap (= respect columns' widths) */
+.row-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* vertical spacing between columns */
+/* [class*="col-"] {
+    margin-bottom: 30px;
+} */
+.content {
+    height: 100%;
+    padding: 1.25rem;
+    color: rgb(134, 115, 115);
+}
+
+.content-settings {
+    background-clip: border-box;
+    border: 1px solid #e3e6f0;
+    border-radius: 0.35rem;
+}
+
+.container{
+	padding: 3 rem;
+}
