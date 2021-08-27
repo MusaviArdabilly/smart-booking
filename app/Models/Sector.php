@@ -20,6 +20,11 @@ class Sector extends Model
         'description',
     ];
 
+    public function floor()
+    {
+        return $this->belongsTo('App\Models\Floor');
+    }
+
     public function desks()
     {
         return $this->hasMany('App\Models\Desk');

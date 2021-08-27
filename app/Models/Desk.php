@@ -20,4 +20,9 @@ class Desk extends Model
         'description',
         'status',
     ];
+
+    public function sector()
+    {
+        return $this->belongsTo('App\Models\Sector');
+    }
 }

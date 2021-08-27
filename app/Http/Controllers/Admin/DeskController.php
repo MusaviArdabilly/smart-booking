@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Sector;
 use App\Models\Desk;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,10 @@ class DeskController extends Controller
         // $desks = Desk::where('sector_id', $sector_id)->get();
         // return view('admin.desk.index', compact('desks', 'sector_id'));
         // return view('admin.desk.index');
-        return view('admin.desk.index', compact('floor_id', 'sector_id'));
+        $sector = Sector::find($sector_id);
+        $floor = $sector->floor;
+        // return compact('sector', 'floor');
+        return view('admin.desk.index', compact('sector', 'floor'));
     }
 
     /**
@@ -39,9 +43,11 @@ class DeskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($floor_id, $sector_id)
     {
-        return view('admin.sector.create');
+        $sector = Sector::find($sector_id);
+        $floor = $sector->floor;
+        return view('admin.desk.create', compact('floor', 'sector'));
     }
 
     /**
@@ -50,7 +56,7 @@ class DeskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($floor_id, $sector_id, Request $request)
     {
         // rules validator
         $validate = $request->validate([
@@ -66,7 +72,9 @@ class DeskController extends Controller
             'description'   => $request->description,
         ]);
 
-        return redirect()->route('desk.index')
+        // return redirect()->route('desk.index')
+        //     ->with('success', 'Desk created successfully.');
+        return redirect()->route('floor.sector.desk.index', [$floor_id, $sector_id])
             ->with('success', 'Desk created successfully.');
     }
 
@@ -87,9 +95,12 @@ class DeskController extends Controller
      * @param  \App\Models\Desk  $desk
      * @return \Illuminate\Http\Response
      */
-    public function edit(Desk $desk)
+    public function edit($floor_id, $sector_id, Desk $desk)
     {
-        return view('admin.desk.edit')->with(compact('desk'));
+        // return view('admin.desk.edit')->with(compact('desk', 'floor_id', 'sector_id'));
+        $sector = Sector::find($sector_id);
+        $floor = $sector->floor;
+        return view('admin.desk.edit', compact('desk', 'floor', 'sector'));
     }
 
     /**
@@ -99,14 +110,14 @@ class DeskController extends Controller
      * @param  \App\Models\Desk  $desk
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Desk $desk)
+    public function update(Request $request, $floor_id, $sector_id, Desk $desk)
     {
         $validate = $request->validate([
             'name' => ['required'],
         ]);
 
         $desk->update($request->all());
-        return redirect()->route('desk.index')
+        return redirect()->route('floor.sector.desk.index', [$floor_id, $sector_id])
             ->with('success', 'Desk updated successfully.');
     }
 
@@ -116,11 +127,11 @@ class DeskController extends Controller
      * @param  \App\Models\Desk  $desk
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Desk $desk)
+    public function destroy($floor_id, $sector_id, Desk $desk)
     {
         $desk->delete();
 
-        return redirect()->route('desk.index')
+        return redirect()->route('floor.sector.desk.index', [$floor_id, $sector_id])
             ->with('success', 'Desk deleted successfully.');
     }
 }

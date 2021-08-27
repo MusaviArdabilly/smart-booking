@@ -54,7 +54,7 @@ class ListController extends ApiController
 
         // will renew with booking logic
         foreach ($desks as $desk) {
-            $desk->is_booking = Arr::random([0, 1]);
+            $desk->is_available = Arr::random([true, false]);
         }
 
         return $this->sendResponse($desks, '');

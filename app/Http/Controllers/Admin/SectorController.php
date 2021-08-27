@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Floor;
 use App\Models\Sector;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,8 @@ class SectorController extends Controller
         // $sectors = Sector::where('floor_id', $floor_id)->get();
         // return view('admin.sector.index', compact('sectors', 'floor_id'));
         // return compact('floor_id');
-        return view('admin.sector.index', compact('floor_id'));
+        $floor = Floor::find($floor_id);
+        return view('admin.sector.index', compact('floor'));
     }
 
     /**
@@ -29,7 +31,7 @@ class SectorController extends Controller
     public function list($floor_id)
     {
         $sectors = Sector::where('floor_id', $floor_id)->get();
-        // $sectors->count = $this->countDataBasedGroup($sectors);
+        $sectors->count = $this->countDataSector($sectors);
 
         return response()->json(['data' => $sectors, 'floor_id' => $floor_id]);
     }
@@ -39,9 +41,10 @@ class SectorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($floor_id)
     {
-        return view('admin.sector.create');
+        $floor = Floor::find($floor_id);
+        return view('admin.sector.create', compact('floor'));
     }
 
     /**
@@ -66,7 +69,7 @@ class SectorController extends Controller
             'description'   => $request->description,
         ]);
 
-        return redirect()->route('sector.index')
+        return redirect()->route('floor.sector.index', $request->floor_id)
             ->with('success', 'Sector created successfully.');
     }
 
@@ -78,8 +81,8 @@ class SectorController extends Controller
      */
     public function show(Sector $sector)
     {
-        return redirect()->route('desk.index')
-            ->with(compact('sector'));
+        // return redirect()->route('desk.index')
+        //     ->with(compact('sector'));
     }
 
     /**
@@ -90,7 +93,8 @@ class SectorController extends Controller
      */
     public function edit($floor_id, Sector $sector)
     {
-        return view('admin.sector.edit')->with(compact('sector', 'floor_id'));
+        $floor = Floor::find($floor_id);
+        return view('admin.sector.edit')->with(compact('sector', 'floor'));
     }
 
     /**
@@ -105,8 +109,8 @@ class SectorController extends Controller
         $validate = $request->validate([
             'name' => ['required'],
         ]);
-
         $sector->update($request->all());
+
         return redirect()->route('floor.sector.index', $floor_id)
             ->with('success', 'Sector updated successfully.');
     }
@@ -122,6 +126,28 @@ class SectorController extends Controller
         $sector->delete();
 
         return redirect()->route('floor.sector.index', $floor_id)
-            ->with('success', 'Sector updated successfully.');
+            ->with('success', 'Sector deleted successfully.');
+    }
+
+    /**
+     * @todo count desks based sector id
+     * @param Array $sectors
+     */
+    private function countDataSector($sectors)
+    {
+        //count sectors and desks based sector id
+        foreach ($sectors as $sector) {
+            //count sector
+            $sector->number_of_desks = $sector->desks()->count();
+            // //condition statement
+            // if ($sector->number_of_sectors == 0) {
+            //     $sector->number_of_desks = 0;
+            // }
+            // //count desks
+            // foreach ($sector->sectors()->get() as $sector) {
+            //     $sector->number_of_desks += $sector->desks()->count();
+            // }
+        }
+        return $sectors;
     }
 }
