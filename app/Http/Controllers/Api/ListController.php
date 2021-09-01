@@ -45,16 +45,18 @@ class ListController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function listDesk($sector_id)
+    public function listDesk($floor_id)
     {
-        $desks = Desk::where('sector_id', $sector_id)->get();
+        $desks = Desk::whereHas('sector', function ($sector) use ($floor_id) {
+            $sector->where('floor_id', $floor_id);
+        })->get();
         // $desks->count = $this->countDataBasedGroup($desks);
 
         // return response()->json(['data' => $desks]);
 
         // will renew with booking logic
         foreach ($desks as $desk) {
-            $desk->is_available = Arr::random([true, false]);
+            $desk->is_available = Arr::random([0, 1]);
         }
 
         return $this->sendResponse($desks, '');
