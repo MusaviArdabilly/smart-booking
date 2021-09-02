@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Floor;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class FloorController extends Controller
 {
     /**
@@ -54,7 +56,7 @@ class FloorController extends Controller
         // rules validator
         $validate = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
-            'description'   => ['string', 'max:255'],
+            'description'   => ['nullable', 'string', 'max:255'],
         ]);
 
         // create new floor
@@ -62,6 +64,12 @@ class FloorController extends Controller
             'name'          => $request->name,
             'description'   => $request->description,
         ]);
+
+        if ($request->hasFile('map')) {
+            $unique_name = md5($request->file('map')->getClientOriginalName() . time()); // rename file
+            $unique_name_ext = $unique_name . '.' . $request->file('map')->extension(); // add ext. back
+            $floor->addMediaFromRequest('map')->usingName($unique_name)->usingFileName($unique_name_ext)->toMediaCollection('maps');
+        }
 
         return redirect()->route('floor.index')
             ->with('success', 'Floor created successfully.');
@@ -88,6 +96,8 @@ class FloorController extends Controller
      */
     public function edit(Floor $floor)
     {
+        $media = $floor->getMedia();
+        // return $floor;
         return view('admin.floor.edit')->with(compact('floor'));
     }
 
@@ -104,6 +114,23 @@ class FloorController extends Controller
             'name' => ['required'],
         ]);
         $floor->update($request->all());
+
+        $media = $floor->getMedia();
+        if ($request->hasFile('map')) {
+            try {
+                // delete old media
+                if ($floor->media[0]) {
+                    $floor->media[0]->delete();
+                }
+            } catch (\Throwable $th) {
+                //
+            }
+            // create new media
+            // $unique_name = md5($request->file('map')->getClientOriginalName() . time()); // rename file
+            // $unique_name_ext = $unique_name . '.' . $request->file('map')->extension(); // add ext. back
+            // $floor->addMediaFromRequest('map')->usingName($unique_name)->usingFileName($unique_name_ext)->toMediaCollection('maps');
+            $floor->addMediaFromRequest('map')->toMediaCollection('maps');
+        }
 
         return redirect()->route('floor.index')
             ->with('success', 'Floor updated successfully.');

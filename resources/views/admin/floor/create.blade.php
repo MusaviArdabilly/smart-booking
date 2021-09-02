@@ -1,5 +1,9 @@
 @extends('admin.layouts.admin')
 
+@section('style')
+    <link href="{{ asset('fileinput/css/fileinput.min.css') }}" rel="stylesheet">
+@endsection
+
 @section('content')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -27,7 +31,7 @@
                         </div>
                         </p>
                     @endif
-                    <form action="{{ route('floor.store') }}" method="POST">
+                    <form action="{{ route('floor.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="name">Name</label>
@@ -37,6 +41,11 @@
                             <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description" cols="30"
                                 rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Map (.svg)</label>
+                            <input type="file" class="form-control" id="file" name="map">
+                            {{-- <input type="file" name="avatar" class="form-control"> --}}
                         </div>
                         <div class="row mb-1">
                             <div class="col">
@@ -54,4 +63,24 @@
         </div>
         <div class="col"></div>
     </div>
+@endsection
+
+@section('script')
+    <script src="{{ asset('fileinput/js/fileinput.min.js') }}"></script>
+    <script src="{{ asset('fileinput/themes/fa/theme.min.js') }}"></script>
+    <script type="text/javascript">
+        $("#file").fileinput({
+            theme: 'fa',
+            showUpload: false,
+            showClose: false,
+            showCancel: false,
+            allowedFileExtensions: ['jpg', 'png', 'gif', 'svg'],
+            overwriteInitial: false,
+            maxFileSize: 2000,
+            maxFilesNum: 10,
+            slugCallback: function(filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
+        });
+    </script>
 @endsection

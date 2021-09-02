@@ -1,6 +1,9 @@
 @extends('admin.layouts.admin')
 
 @section('style')
+    {{-- Datatables --}}
+    <link href="{{ asset('datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('datatables/responsive/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
     <style>
         #table {
             table-layout: fixed;
@@ -9,8 +12,8 @@
         }
 
         /* #table.dataTable.no-footer {
-                                    border-bottom: unset;
-                                } */
+                                                        border-bottom: unset;
+                                                    } */
 
         #table tbody td {
             display: block;
@@ -40,8 +43,8 @@
         }
 
         /* .breadcrumb {
-                                                                                                                padding: 2px 15px !important;
-                                                                                                            } */
+                                                                                                                                    padding: 2px 15px !important;
+                                                                                                                                } */
 
     </style>
 @endsection
@@ -71,6 +74,51 @@
             <span>{{ $message }}</span>
         </div>
     @endif
+
+    <div class="row">
+        <div class="col">
+            <div class="card shadow mb-4">
+                <div class="card-header"><strong>Floor Detail</strong></div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-borderless display responsive nowrap" id="" width="100%"
+                                    cellspacing="0">
+                                    <tr>
+                                        <td style="max-width: 20%; width:20%">Floor ID</td>
+                                        <td style="max-width: 1%; width:1%">:</td>
+                                        <td>{{ $sector->id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sector Name</td>
+                                        <td>:</td>
+                                        <td>{{ $sector->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description</td>
+                                        <td>:</td>
+                                        <td>{{ $sector->description }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col text-center align-self-center">
+                            @if ($sector->getFirstMediaUrl('map', 'thumb'))
+                                <img src="{{ $sector->getFirstMediaUrl('map', 'thumb') }}" alt="" class="img-thumbnail"
+                                    style="max-height: 400px">
+                                {{-- {{ $floor->getFirstMedia('map')->img('', ['class' => 'shadow', 'alt' => '']) }} --}}
+                            @else
+                                No Image
+                            @endif
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
 
@@ -152,6 +200,11 @@
 @endsection
 
 @section('script')
+    {{-- Datatable --}}
+    <script src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('datatables/responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('datatables/responsive/js/responsive.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('datatables/sorting/natural.js') }}"></script>
     <script type="text/javascript">
         // console.log("<?php $message = Session::get('floor') ? $message : ''; ?>");

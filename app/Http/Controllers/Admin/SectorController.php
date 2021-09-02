@@ -20,6 +20,7 @@ class SectorController extends Controller
         // return view('admin.sector.index', compact('sectors', 'floor_id'));
         // return compact('floor_id');
         $floor = Floor::find($floor_id);
+        $media = $floor->getMedia();
         return view('admin.sector.index', compact('floor'));
     }
 
@@ -55,11 +56,12 @@ class SectorController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->all();
         // rules validator
         $validate = $request->validate([
             'floor_id'      => ['required'],
             'name'          => ['required', 'string', 'max:255'],
-            'description'   => ['string', 'max:255'],
+            'description'   => ['nullable', 'string', 'max:255'],
         ]);
 
         // create new sector
@@ -68,6 +70,18 @@ class SectorController extends Controller
             'name'          => $request->name,
             'description'   => $request->description,
         ]);
+
+        if ($request->hasFile('photo')) {
+            // $unique_name = md5($request->file('photo')->getClientOriginalName() . time()); // rename file
+            // $unique_name_ext = $unique_name . '.' . $request->file('photo')->extension(); // add ext. back
+            // $sector->addMediaFromRequest('photo')->usingName($unique_name)->usingFileName($unique_name_ext)->toMediaCollection('photos');
+
+            // can't rename the file
+            $fileAdders = $sector->addMultipleMediaFromRequest(['photo'])
+                ->each(function ($fileAdder) {
+                    $fileAdder->toMediaCollection('sectors');
+                });
+        }
 
         return redirect()->route('floor.sector.index', $request->floor_id)
             ->with('success', 'Sector created successfully.');
@@ -94,6 +108,7 @@ class SectorController extends Controller
     public function edit($floor_id, Sector $sector)
     {
         $floor = Floor::find($floor_id);
+        $media = $sector->getMedia();
         return view('admin.sector.edit')->with(compact('sector', 'floor'));
     }
 

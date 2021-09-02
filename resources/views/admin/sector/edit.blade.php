@@ -1,5 +1,9 @@
 @extends('admin.layouts.admin')
 
+@section('style')
+    <link href="{{ asset('fileinput/css/fileinput.min.css') }}" rel="stylesheet">
+@endsection
+
 @section('content')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -29,7 +33,8 @@
                         </div>
                         </p>
                     @endif
-                    <form action="{{ route('floor.sector.update', [$floor->id, $sector->id]) }}" method="POST">
+                    <form action="{{ route('floor.sector.update', [$floor->id, $sector->id]) }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="form-group">
@@ -41,6 +46,11 @@
                             <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description" cols="30"
                                 rows="4">{{ $sector->description }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Map</label>
+                            {{-- <img src="{{ $floor->getFirstMediaUrl('map', 'thumb') }}" / width="120px"> --}}
+                            <input type="file" class="form-control" id="file" name="photo[]" multiple>
                         </div>
                         <div class="row mb-1">
                             <div class="col">
@@ -57,4 +67,67 @@
         </div>
         <div class="col"></div>
     </div>
+@endsection
+
+@section('script')
+    <script src="{{ asset('fileinput/js/fileinput.min.js') }}"></script>
+    <script src="{{ asset('fileinput/themes/fa/theme.min.js') }}"></script>
+    <script type="text/javascript">
+        var imageUrl = "{{ $floor->getFirstMediaUrl('maps', 'thumb') }}";
+        if (imageUrl != "") {
+            var initialPreview = [
+                "{{ $floor->getFirstMediaUrl('maps', 'thumb') }}",
+            ];
+            var initialPreviewConfig = [{
+                type: "image",
+                caption: "{{ isset($floor->media[0]) ? $floor->media[0]->file_name : '' }}",
+                size: "{{ isset($floor->media[0]) ? $floor->media[0]->size : '' }}",
+                // url: "/site/file-delete",
+                key: 1
+            }, ];
+            $("#file").fileinput({
+                theme: 'fa',
+                showUpload: false,
+                showClose: false,
+                showCancel: false,
+                showRemove: false,
+                allowedFileExtensions: ['svg', 'jpg', 'png'],
+                // overwriteInitial: false,
+                autoReplace: true,
+                overwriteInitial: true,
+                showUploadedThumbs: false,
+                maxFileCount: 1,
+                initialPreview: initialPreview,
+                initialPreviewAsData: true,
+                initialPreviewConfig: initialPreviewConfig,
+                initialPreviewFileType: 'image',
+                initialPreviewShowDelete: false,
+                maxFileSize: 2000,
+                maxFilesNum: 10,
+                slugCallback: function(filename) {
+                    return filename.replace('(', '_').replace(']', '_');
+                }
+            });
+        } else {
+            $("#file").fileinput({
+                theme: 'fa',
+                showUpload: false,
+                showClose: false,
+                showCancel: false,
+                allowedFileExtensions: ['svg', 'jpg', 'png'],
+                overwriteInitial: false,
+                maxFileCount: 1,
+                // initialPreview: initialPreview,
+                initialPreviewAsData: true,
+                // initialPreviewConfig: initialPreviewConfig,
+                initialPreviewFileType: 'image',
+                initialPreviewShowDelete: false,
+                maxFileSize: 2000,
+                maxFilesNum: 10,
+                slugCallback: function(filename) {
+                    return filename.replace('(', '_').replace(']', '_');
+                }
+            });
+        }
+    </script>
 @endsection

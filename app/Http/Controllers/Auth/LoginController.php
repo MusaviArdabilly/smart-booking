@@ -42,4 +42,17 @@ class LoginController extends Controller
     {
         return 'username';
     }
+
+    /**
+     * Check user's role and redirect user based on their role
+     * @return
+     */
+    public function authenticated()
+    {
+        if (auth()->user()->role == 'admin') {
+            return redirect('/admin/dashboard');
+        }
+
+        return redirect('/user/dashboard');
+    }
 }

@@ -21,10 +21,9 @@
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/chart.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('datatables/responsive/css/responsive.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css">
+    <link href="{{ asset('css/font-awesome.min.css') }}" media="all" rel="stylesheet" type="text/css">
+
+    {{-- <link href="{{ asset('css/chart.min.css') }}" rel="stylesheet" type="text/css"> --}}
     {{-- <link href="{{asset('datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"> --}}
     @yield('style')
 </head>
@@ -268,12 +267,7 @@
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('js/jquery.easing.min.js') }}"></script>
     <!-- Chart JS -->
-    <script src="{{ asset('js/chart.min.js') }}"></script>
-    {{-- Datatable --}}
-    <script src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('datatables/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('datatables/responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('datatables/responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    {{-- <script src="{{ asset('js/chart.min.js') }}"></script> --}}
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
     @yield('script')
