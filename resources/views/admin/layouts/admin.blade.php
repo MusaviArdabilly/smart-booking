@@ -96,6 +96,13 @@
                 </div>
             </li> --}}
 
+            <!--Bookings-->
+            <li class="nav-item {{ Route::is('booking*') ? 'active' : '' }}">
+                <a class="nav-link w-100" href="{{ route('booking.index') }}">
+                    <i class="fas fa-book-open fa-fw"></i>
+                    <span>Bookings</span></a>
+            </li>
+
             {{-- @if (Auth::user())
                 @if (Auth::user()->level === 'admin') --}}
             <!-- Nav Item - Master Collapse Menu -->
@@ -114,17 +121,18 @@
                             href="{{ route('floor.index') }}">Floor</a>
                         {{-- <a class="collapse-item {{ Route::is('sector*') ? 'active' : '' }}" href="#">Sector</a>
                         <a class="collapse-item {{ Route::is('desk*') ? 'active' : '' }}" href="#">Desk</a> --}}
-                        <a class="collapse-item {{ Route::is('user*') ? 'active' : '' }}" href="#">User</a>
+                        <a class="collapse-item {{ Route::is('user*') ? 'active' : '' }}"
+                            href="{{ route('user.index') }}">User</a>
                     </div>
                 </div>
             </li>
 
-            <!--Settings-->
+            {{-- <!--Settings-->
             <li class="nav-item {{ Route::is('setting*') ? 'active' : '' }}">
                 <a class="nav-link w-100" href="#">
                     <i class="fas fa-cog fa-fw"></i>
                     <span>Settings</span></a>
-            </li>
+            </li> --}}
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">

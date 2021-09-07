@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+// use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\FloorController;
 use App\Http\Controllers\Admin\SectorController;
 use App\Http\Controllers\Admin\DeskController;
-use App\Http\Controllers\Api\ListController;
+use App\Http\Controllers\Admin\UserController;
+
+use App\Http\Controllers\Admin\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,8 @@ Route::get('/admin/dashboard', function () {
 })->name('admin.dashboard');
 
 $router->group(['prefix' => 'admin', 'middleware' => 'is_admin'], function () use ($router) {
+    Route::resource('user', UserController::class);
+
     Route::get('floor/list', [FloorController::class, 'list'])->name('floor.list');
     Route::resource('floor', FloorController::class);
 
@@ -40,4 +44,6 @@ $router->group(['prefix' => 'admin', 'middleware' => 'is_admin'], function () us
 
     Route::get('floor/{floor}/sector/{sector}/desk/list', [DeskController::class, 'list'])->name('floor.sector.desk.list');
     Route::resource('floor.sector.desk', DeskController::class);
+
+    Route::get('booking', [BookingController::class, 'index'])->name('booking.index');
 });
