@@ -48,4 +48,27 @@ class ApiController extends Controller
 
         return response()->json($response, $code);
     }
+
+    /**
+     * Invalid response method
+     *
+     * @param mixed $error
+     * @param array $errorMessages
+     * @param int $code
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendInvalid($invalid, $invalidMessages = [], $code = 422)
+    {
+        $response = [
+            'success'   => false,
+            'message'   => $invalid,
+        ];
+
+        if (!empty($invalidMessages)) {
+            $response['data'] = $invalidMessages;
+        }
+
+        return response()->json($response, $code);
+    }
 }
