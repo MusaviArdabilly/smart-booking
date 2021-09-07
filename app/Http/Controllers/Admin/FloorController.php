@@ -66,9 +66,10 @@ class FloorController extends Controller
         ]);
 
         if ($request->hasFile('map')) {
-            $unique_name = md5($request->file('map')->getClientOriginalName() . time()); // rename file
-            $unique_name_ext = $unique_name . '.' . $request->file('map')->extension(); // add ext. back
-            $floor->addMediaFromRequest('map')->usingName($unique_name)->usingFileName($unique_name_ext)->toMediaCollection('maps');
+            // $unique_name = md5($request->file('map')->getClientOriginalName() . time()); // rename file
+            // $unique_name_ext = $unique_name . '.' . $request->file('map')->extension(); // add ext. back
+            // $floor->addMediaFromRequest('map')->usingName($unique_name)->usingFileName($unique_name_ext)->toMediaCollection('maps');
+            $floor->addMediaFromRequest('map')->toMediaCollection('maps');
         }
 
         return redirect()->route('floor.index')
@@ -97,7 +98,7 @@ class FloorController extends Controller
     public function edit(Floor $floor)
     {
         $media = $floor->getMedia();
-        // return $floor;
+
         return view('admin.floor.edit')->with(compact('floor'));
     }
 
@@ -169,6 +170,7 @@ class FloorController extends Controller
                 $floor->number_of_desks += $sector->desks()->count();
             }
         }
+
         return $floors;
     }
 }

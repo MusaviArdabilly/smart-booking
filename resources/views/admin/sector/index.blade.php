@@ -11,8 +11,8 @@
         }
 
         /* #table.dataTable.no-footer {
-                                                                                                                                                                                                                                                                                                                                    border-bottom: unset;
-                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                        border-bottom: unset;
+                                                                                                                                                                                                                                                                                                                                                    } */
 
         #table tbody td {
             display: block;
@@ -42,8 +42,8 @@
         }
 
         /* .breadcrumb {
-                                                                                                                                                                                                                                                                                                                                                    padding: 2px 15px !important;
-                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                        padding: 2px 15px !important;
+                                                                                                                                                                                                                                                                                                                                                                    } */
 
     </style>
 
@@ -107,9 +107,11 @@
                         </div>
                         <div class="col text-center align-self-center">
                             @if ($floor->getFirstMediaUrl('maps', 'thumb'))
-                                <img src="{{ $floor->getFirstMediaUrl('maps', 'thumb') }}" alt="" class="img-thumbnail"
-                                    style="max-height: 400px">
-                                {{-- {{ $floor->getFirstMedia('map')->img('', ['class' => 'shadow', 'alt' => '']) }} --}}
+                                <div id="carouselControls" class="carousel slide bg-secondary" data-ride="carousel">
+                                    <img src="{{ $floor->getFirstMediaUrl('maps', 'thumb') }}" alt=""
+                                        class="d-block" style="height: 300px; max-height: 300px; margin:auto">
+                                    {{-- {{ $floor->getFirstMedia('map')->img('', ['class' => 'shadow', 'alt' => '']) }} --}}
+                                </div>
                             @else
                                 No Image
                             @endif

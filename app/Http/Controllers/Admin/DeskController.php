@@ -21,8 +21,9 @@ class DeskController extends Controller
         // return view('admin.desk.index');
         $sector = Sector::find($sector_id);
         $floor = $sector->floor;
-        // return compact('sector', 'floor');
-        return view('admin.desk.index', compact('sector', 'floor'));
+        $media = $sector->getMedia();
+
+        return view('admin.desk.index', compact('sector'));
     }
 
     /**
@@ -47,6 +48,7 @@ class DeskController extends Controller
     {
         $sector = Sector::find($sector_id);
         $floor = $sector->floor;
+
         return view('admin.desk.create', compact('floor', 'sector'));
     }
 
@@ -100,6 +102,7 @@ class DeskController extends Controller
         // return view('admin.desk.edit')->with(compact('desk', 'floor_id', 'sector_id'));
         $sector = Sector::find($sector_id);
         $floor = $sector->floor;
+
         return view('admin.desk.edit', compact('desk', 'floor', 'sector'));
     }
 
@@ -117,6 +120,7 @@ class DeskController extends Controller
         ]);
 
         $desk->update($request->all());
+
         return redirect()->route('floor.sector.desk.index', [$floor_id, $sector_id])
             ->with('success', 'Desk updated successfully.');
     }

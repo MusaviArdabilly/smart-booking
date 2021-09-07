@@ -12,8 +12,8 @@
         }
 
         /* #table.dataTable.no-footer {
-                                                        border-bottom: unset;
-                                                    } */
+                                                                                                                                                                                                                                border-bottom: unset;
+                                                                                                                                                                                                                            } */
 
         #table tbody td {
             display: block;
@@ -43,8 +43,8 @@
         }
 
         /* .breadcrumb {
-                                                                                                                                    padding: 2px 15px !important;
-                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                            padding: 2px 15px !important;
+                                                                                                                                                                                                                                                                                                        } */
 
     </style>
 @endsection
@@ -53,7 +53,8 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('floor.index') }}">Floor List</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('floor.sector.index', $floor->id) }}">{{ $floor->name }}</a>
+            <li class="breadcrumb-item"><a
+                    href="{{ route('floor.sector.index', $sector->floor->id) }}">{{ $sector->floor->name }}</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ $sector->name }}</li>
         </ol>
@@ -105,12 +106,36 @@
                             </div>
                         </div>
                         <div class="col text-center align-self-center">
-                            @if ($sector->getFirstMediaUrl('map', 'thumb'))
-                                <img src="{{ $sector->getFirstMediaUrl('map', 'thumb') }}" alt="" class="img-thumbnail"
-                                    style="max-height: 400px">
-                                {{-- {{ $floor->getFirstMedia('map')->img('', ['class' => 'shadow', 'alt' => '']) }} --}}
-                            @else
-                                No Image
+                            @if ($sector->getFirstMediaUrl('sectors', 'thumb'))
+                                <div id="carouselControls" class="carousel slide bg-secondary" data-ride="carousel">
+                                    <div class="carousel-inner">
+                                        @php
+                                            $i = 0;
+                                        @endphp
+                                        @foreach ($sector->media as $item)
+                                            <div class="carousel-item {{ $i == 0 ? 'active' : '' }}">
+                                                @php
+                                                    $i++;
+                                                @endphp
+                                                {{-- <img src="{{ $item->getUrl() }}" alt="" class="img-thumbnail"
+                                        style="max-height: 300px"> --}}
+                                                <img class="d-block" src="{{ $item->getUrl() }}" alt=""
+                                                    style="height:300px; max-height: 300px; margin:auto">
+                                            </div>
+                                        @endforeach
+                                        <a class="carousel-control-prev" href="#carouselControls" role="button"
+                                            data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carouselControls" role="button"
+                                            data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>
+                                @else
+                                    No Image
                             @endif
                         </div>
                     </div>
@@ -211,8 +236,8 @@
         $(document).ready(function() {
             // console_log("<?php Session::get('floor') ? Session::get('floor') : ''; ?>");
             $("#table thead").hide();
-            let url_list = "{{ route('floor.sector.desk.list', [$floor->id, $sector->id]) }}";
-            let url_create = "{{ route('floor.sector.desk.create', [$floor->id, $sector->id]) }}";
+            let url_list = "{{ route('floor.sector.desk.list', [$sector->floor->id, $sector->id]) }}";
+            let url_create = "{{ route('floor.sector.desk.create', [$sector->floor->id, $sector->id]) }}";
             var dt = $('#table').DataTable({
                 // ajax: "http://loremjson.itmilenial.com/getdata/user/people",
                 ajax: url_list,
@@ -238,7 +263,7 @@
                 },
                 columns: [{
                         render: function(data, type, row, meta) {
-                            let floor_id = '{{ $floor->id }}';
+                            let floor_id = '{{ $sector->floor->id }}';
                             let sector_id = '{{ $sector->id }}';
                             let id = row.id;
 
@@ -316,7 +341,7 @@
             var modal = $(this);
             var form = document.getElementById("deleteForm");
             let url = "{{ route('floor.sector.desk.destroy', [':floor_id', ':sector_id', ':id']) }}";
-            url = url.replace(':floor_id', '{{ $floor->id }}');
+            url = url.replace(':floor_id', '{{ $sector->floor->id }}');
             url = url.replace(':sector_id', '{{ $sector->id }}');
             url = url.replace(':id', id);
             form.action = url;

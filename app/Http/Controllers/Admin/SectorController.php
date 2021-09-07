@@ -109,6 +109,7 @@ class SectorController extends Controller
     {
         $floor = Floor::find($floor_id);
         $media = $sector->getMedia();
+
         return view('admin.sector.edit')->with(compact('sector', 'floor'));
     }
 
@@ -154,15 +155,8 @@ class SectorController extends Controller
         foreach ($sectors as $sector) {
             //count sector
             $sector->number_of_desks = $sector->desks()->count();
-            // //condition statement
-            // if ($sector->number_of_sectors == 0) {
-            //     $sector->number_of_desks = 0;
-            // }
-            // //count desks
-            // foreach ($sector->sectors()->get() as $sector) {
-            //     $sector->number_of_desks += $sector->desks()->count();
-            // }
         }
+
         return $sectors;
     }
 }
