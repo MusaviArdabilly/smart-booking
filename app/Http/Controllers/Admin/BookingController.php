@@ -16,11 +16,12 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::all();
+        $bookings = Booking::orderByRaw("FIELD(status , 'checked-in', 'booked', 'checked-out', 'cancelled') ASC")->get();
+        // return $bookings;
         foreach ($bookings as $booking) {
             $booking->start_time = Carbon::createFromFormat('H:i:s', $booking->start_time)->format('H:i');
             $booking->end_time = Carbon::createFromFormat('H:i:s', $booking->end_time)->format('H:i');
-            $booking->status = ucfirst($booking->status);
+            // $booking->status = ucfirst($booking->status);
         }
         return view('admin.booking.index', compact('bookings'));
     }
@@ -78,6 +79,22 @@ class BookingController extends Controller
     public function update(Request $request, Booking $booking)
     {
         //
+    }
+
+    /**
+     * Update the status to checked-out in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Booking  $booking
+     * @return \Illuminate\Http\Response
+     */
+    public function checkout(Booking $booking)
+    {
+        // update booking status
+        $booking->status = 'checked-out';
+        $booking->save();
+
+        return response()->json(['message' => 'Status updated to Check Out successfully.']);
     }
 
     /**

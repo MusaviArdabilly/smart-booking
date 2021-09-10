@@ -33,7 +33,7 @@ class ListController extends ApiController
             unset($floor->media);
         }
 
-        return $this->sendResponse($floors, '');
+        return $this->sendResponse('', $floors);
     }
 
     /**
@@ -61,7 +61,7 @@ class ListController extends ApiController
             unset($sector->media);
         }
 
-        return $this->sendResponse($sectors, '');
+        return $this->sendResponse('', $sectors);
     }
 
     /**
@@ -87,7 +87,7 @@ class ListController extends ApiController
             $desk->is_available = 1;
         }
 
-        return $this->sendResponse($desks, '');
+        return $this->sendResponse('', $desks);
     }
 
     /**
@@ -131,14 +131,14 @@ class ListController extends ApiController
             $desk->is_available = 1;
         }
 
-        return $this->sendResponse($desks, '');
+        return $this->sendResponse('', $desks);
     }
 
     public function booking($user_id)
     {
         $bookings = Booking::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
 
-        return $this->sendResponse($bookings, '');
+        return $this->sendResponse('', $bookings);
     }
 
     public function bookingToday($user_id)
@@ -146,6 +146,6 @@ class ListController extends ApiController
         $today = Carbon::today()->toDateString();
         $bookings = Booking::where('user_id', $user_id)->where('date', $today)->orderBy('created_at', 'desc')->get();
 
-        return $this->sendResponse($bookings, '');
+        return $this->sendResponse('', $bookings);
     }
 }

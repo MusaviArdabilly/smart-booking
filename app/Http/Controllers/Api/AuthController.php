@@ -29,7 +29,7 @@ class AuthController extends ApiController
         $success['token'] = $user->createToken(NULL)->accessToken;
         $success['name'] = $user->name;
 
-        return $this->sendResponse($success, 'User login successfully');
+        return $this->sendResponse('User login successfully', $success);
     }
 
     public function login(Request $request)
@@ -39,7 +39,7 @@ class AuthController extends ApiController
             $success['token'] = $user->createToken(NULL)->accessToken;
             $success['name'] = $user->name;
 
-            return $this->sendResponse($success, 'User login successfully');
+            return $this->sendResponse('User login successfully', $success);
         } else {
             return $this->sendError('Unauthorized' . ['error' => 'Unauthorized']);
         }

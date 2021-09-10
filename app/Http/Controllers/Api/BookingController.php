@@ -53,7 +53,7 @@ class BookingController extends ApiController
 
         $booking = $request->all();
 
-        return $this->sendResponse($booking, 'Booking created succesfully');
+        return $this->sendResponse('Booking created succesfully', $booking);
     }
 
     /**
@@ -64,7 +64,7 @@ class BookingController extends ApiController
      */
     public function show(Booking $booking)
     {
-        return $this->sendResponse($booking, '');
+        return $this->sendResponse('', $booking);
     }
 
     /**
@@ -88,5 +88,68 @@ class BookingController extends ApiController
     public function destroy(Booking $booking)
     {
         //
+    }
+
+    /**
+     * Check and update when checkin
+     *
+     * @param  \App\Models\Booking  $booking
+     * @return \Illuminate\Http\Response
+     */
+    public function checkin(Request $request, Booking $booking)
+    {
+        // desk check
+        if ($booking->desk_id != $request->desk_id) {
+            return $this->sendInvalid('You in the wrong desk!', '');
+        }
+
+        // $today = Carbon::today()->format('Y-m-d');
+        // $now = Carbon::now()->format('Y-m-d  H:i');
+        $today = Carbon::parse($booking->date)->format('Y-m-d');
+        $now = Carbon::parse($booking->date . ' ' . $booking->start_time)->subMinute('15')->format('Y-m-d H:i');
+        $before = Carbon::parse($booking->date . ' ' . $booking->start_time)->subMinute('15')->format('Y-m-d H:i');
+        $after = Carbon::parse($booking->date . ' ' . $booking->start_time)->addMinute('15')->format('Y-m-d H:i');
+
+        if ($now < $before) {
+            return $this->sendInvalid('You need to wait!', '');
+        } else if ($now > $after) {
+            return $this->sendInvalid('You are too late!', '');
+        }
+
+        // booked/used desk
+        $booking_before = Booking::where('desk_id', $booking->desk_id)->where('date', $today)
+            ->where('status', 'checked-in')
+            ->where(function ($query) use ($before, $after) {
+                $query->whereBetween('end_time', [$before, $after]);
+            })->get();
+        if (count($booking_before)) {
+            return $this->sendInvalid('Your desk still being used!', '');
+        }
+
+        // update booking status
+        $booking->status = 'checked-in';
+        $booking->save();
+
+        return $this->sendResponse('You have been check-in!', $booking);
+    }
+
+    /**
+     * Check and update when checkin
+     *
+     * @param  \App\Models\Booking  $booking
+     * @return \Illuminate\Http\Response
+     */
+    public function checkout(Request $request, Booking $booking)
+    {
+        // desk check
+        if ($booking->desk_id != $request->desk_id) {
+            return $this->sendInvalid('You in the wrong desk!', '');
+        }
+
+        // update booking status
+        $booking->status = 'checked-out';
+        $booking->save();
+
+        return $this->sendResponse('You have been check-out!', $booking);
     }
 }

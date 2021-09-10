@@ -7,7 +7,7 @@
     <style>
         #table {
             table-layout: fixed;
-            width: 99% !important;
+            /* width: 99% !important; */
             /* width: 97% !important; */
         }
 
@@ -56,7 +56,8 @@
                         style="margin-bottom: 15px;"><i class="fas fa-plus"></i> Create New</a>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered display nowrap" id="table" width="100%" cellspacing="0">
+                        <table class="table table-bordered table-responsive display nowrap" id="table" width="100%"
+                            cellspacing="0">
                             <thead>
                                 <tr>
                                     <th width="4%">#</th>

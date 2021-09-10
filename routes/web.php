@@ -46,4 +46,6 @@ $router->group(['prefix' => 'admin', 'middleware' => 'is_admin'], function () us
     Route::resource('floor.sector.desk', DeskController::class);
 
     Route::get('booking', [BookingController::class, 'index'])->name('booking.index');
+    Route::get('booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
+    Route::get('booking/{booking}/checkout', [BookingController::class, 'checkout'])->name('booking.checkout');
 });

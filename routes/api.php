@@ -34,6 +34,8 @@ Route::post('booking', [BookingController::class, 'store']);
 Route::get('booking/{booking}', [BookingController::class, 'show']);
 Route::get('booking/{user}/list', [ListController::class, 'booking']);
 Route::get('booking/{user}/list/today', [ListController::class, 'bookingToday']);
+Route::patch('booking/{booking}/checkin', [BookingController::class, 'checkin']);
+Route::patch('booking/{booking}/checkout', [BookingController::class, 'checkout']);
 
 // Route::middleware('auth:api')->group(function () {
     // Route::resource('floor', FloorControllers::class);
