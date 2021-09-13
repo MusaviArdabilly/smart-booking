@@ -41,17 +41,30 @@ class BookingController extends ApiController
             return $this->sendInvalid($validator->errors(), 'Validation errors');
         }
 
+        $start  = Carbon::parse($request->date . ' ' . $request->start_time)->format('Y-m-d H:i');
+        $end    = Carbon::parse($request->date . ' ' . $request->end_time)->format('Y-m-d H:i');
+
+        // booked/used desk
+        $booked = Booking::where('desk_id', $request->desk_id)->where('date', $request->date)
+            ->where(function ($query) use ($start, $end) {
+                $query->whereBetween('start_time', [$start, $end]);
+            })
+            ->where(function ($query) use ($start, $end) {
+                $query->whereBetween('end_time', [$start, $end]);
+            })->get();
+        if (count($booked)) {
+            return $this->sendInvalid('Desk already booked!', $booked);
+        }
+
         // create new desk
         $booking = Booking::create([
             'book_id'       => 'BK' . Carbon::now()->format('YmdHis'),
-            'user_id'       => $request->user_id,
-            'desk_id'       => $request->desk_id,
+            'user_id'       => (int)$request->user_id,
+            'desk_id'       => (int)$request->desk_id,
             'date'          => $request->date,
             'start_time'    => $request->start_time,
             'end_time'      => $request->end_time,
         ]);
-
-        $booking = $request->all();
 
         return $this->sendResponse('Booking created succesfully', $booking);
     }
@@ -103,26 +116,26 @@ class BookingController extends ApiController
             return $this->sendInvalid('You in the wrong desk!', '');
         }
 
-        // $today = Carbon::today()->format('Y-m-d');
-        // $now = Carbon::now()->format('Y-m-d  H:i');
-        $today = Carbon::parse($booking->date)->format('Y-m-d');
-        $now = Carbon::parse($booking->date . ' ' . $booking->start_time)->subMinute('15')->format('Y-m-d H:i');
-        $before = Carbon::parse($booking->date . ' ' . $booking->start_time)->subMinute('15')->format('Y-m-d H:i');
-        $after = Carbon::parse($booking->date . ' ' . $booking->start_time)->addMinute('15')->format('Y-m-d H:i');
+        $today  = Carbon::today()->format('Y-m-d');
+        $now    = Carbon::now()->format('Y-m-d  H:i');
+        // $today   = Carbon::parse($booking->date)->format('Y-m-d');
+        // $now     = Carbon::parse($booking->date . ' ' . $booking->start_time)->subMinute('15')->format('Y-m-d H:i');
+        $start  = Carbon::parse($booking->date . ' ' . $booking->start_time)->subMinute('15')->format('Y-m-d H:i');
+        $end    = Carbon::parse($booking->date . ' ' . $booking->start_time)->addMinute('15')->format('Y-m-d H:i');
 
-        if ($now < $before) {
+        if ($now < $start) {
             return $this->sendInvalid('You need to wait!', '');
-        } else if ($now > $after) {
+        } else if ($now > $end) {
             return $this->sendInvalid('You are too late!', '');
         }
 
         // booked/used desk
-        $booking_before = Booking::where('desk_id', $booking->desk_id)->where('date', $today)
+        $booked = Booking::where('desk_id', $booking->desk_id)->where('date', $today)
             ->where('status', 'checked-in')
-            ->where(function ($query) use ($before, $after) {
-                $query->whereBetween('end_time', [$before, $after]);
+            ->where(function ($query) use ($start, $end) {
+                $query->whereBetween('end_time', [$start, $end]);
             })->get();
-        if (count($booking_before)) {
+        if (count($booked)) {
             return $this->sendInvalid('Your desk still being used!', '');
         }
 
