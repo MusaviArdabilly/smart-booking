@@ -117,7 +117,7 @@ class BookingController extends ApiController
 
         // store new booking
         $booking = new Booking();
-        $booking->book_id        = 'BK' . Carbon::now()->format('YmdHis');
+        $booking->book_id   = 'BK' . Carbon::now()->format('YmdHis');
         $booking->user_id   = (int)$request->user_id;
         $booking->desk_id   = (int)$request->desk_id;
         $booking->date      = $request->date;
@@ -201,17 +201,19 @@ class BookingController extends ApiController
      */
     public function checkin(Request $request, Booking $booking)
     {
+        // $now    = Carbon::now()->format('Y-m-d  H:i');
+        // return $now;
         // desk check
         if ($booking->desk_id != $request->desk_id) {
             return $this->sendInvalid('You in the wrong desk!', '');
         }
 
-        $today  = Carbon::today()->format('Y-m-d');
-        $now    = Carbon::now()->format('Y-m-d  H:i');
+        $today  = Carbon::today();
+        $now    = Carbon::now();
         // $today  = Carbon::parse($booking->date)->format('Y-m-d');
         // $now    = Carbon::parse($booking->date . ' ' . $booking->start_time)->subMinute('10')->format('Y-m-d H:i');
-        $start  = Carbon::parse($booking->date . ' ' . $booking->start_time)->subMinute('15')->format('Y-m-d H:i');
-        $end    = Carbon::parse($booking->date . ' ' . $booking->start_time)->addMinute('15')->format('Y-m-d H:i');
+        $start  = Carbon::parse($booking->date . ' ' . $booking->time->start)->subMinute('15');
+        $end    = Carbon::parse($booking->date . ' ' . $booking->time->start)->addMinute('15');
 
         // check if too soon / late
         if ($now < $start) {
@@ -236,6 +238,7 @@ class BookingController extends ApiController
         $booking->status = 'checked-in';
         $booking->time()->update(['checkin' => Carbon::now()]);
         $booking->save();
+        unset($booking->time);
 
         // get time detail
         $booking->time;

@@ -17,6 +17,7 @@ class CreateAssessmentsTable extends Migration
             $table->id();
             $table->string('assess_id');
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->integer('point');
             $table->dateTime('expires_at');
             $table->timestamps();
 

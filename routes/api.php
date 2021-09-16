@@ -4,11 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ListController;
-use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\FloorController;
 use App\Http\Controllers\Api\SectorController;
 use App\Http\Controllers\Api\DeskController;
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\AssessmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +42,6 @@ Route::get('booking/{user}/list/today', [BookingController::class, 'today']);
 Route::patch('booking/{booking}/checkin', [BookingController::class, 'checkin']);
 Route::patch('booking/{booking}/checkout', [BookingController::class, 'checkout']);
 
-// Route::middleware('auth:api')->group(function () {
-    // Route::resource('floor', FloorControllers::class);
-// });
+Route::post('assessment', [AssessmentController::class, 'store']);
+Route::get('assessment/{assessment}', [AssessmentController::class, 'show']);
+Route::get('assessment/{user}/list', [AssessmentController::class, 'index']);
