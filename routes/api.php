@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ListController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\FloorController;
+use App\Http\Controllers\Api\SectorController;
+use App\Http\Controllers\Api\DeskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,15 +28,17 @@ use App\Http\Controllers\Api\BookingController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::get('floor/list', [ListController::class, 'floor']);
-Route::get('sector/{floor}/list', [ListController::class, 'sector']);
-Route::get('desk/{sector}/list', [ListController::class, 'desk']);
-Route::get('desk/{sector}/list/available/', [ListController::class, 'deskAvailable']);
+// Route::group(['middleware' => 'auth:api'], function () {
+Route::get('floor/list', [FloorController::class, 'index']);
+// });
+Route::get('sector/{floor}/list', [SectorController::class, 'index']);
+Route::get('desk/{sector}/list', [DeskController::class, 'index']);
+Route::get('desk/{sector}/list/available/', [DeskController::class, 'available']);
 
 Route::post('booking', [BookingController::class, 'store']);
 Route::get('booking/{booking}', [BookingController::class, 'show']);
-Route::get('booking/{user}/list', [ListController::class, 'booking']);
-Route::get('booking/{user}/list/today', [ListController::class, 'bookingToday']);
+Route::get('booking/{user}/list', [BookingController::class, 'index']);
+Route::get('booking/{user}/list/today', [BookingController::class, 'today']);
 Route::patch('booking/{booking}/checkin', [BookingController::class, 'checkin']);
 Route::patch('booking/{booking}/checkout', [BookingController::class, 'checkout']);
 
