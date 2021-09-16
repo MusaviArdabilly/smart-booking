@@ -20,10 +20,13 @@ class Booking extends Model
         'user_id',
         'desk_id',
         'date',
-        'start_time',
-        'end_time',
         'status',
     ];
+
+    public function time()
+    {
+        return $this->hasOne('App\Models\BookingTime');
+    }
 
     public function user()
     {

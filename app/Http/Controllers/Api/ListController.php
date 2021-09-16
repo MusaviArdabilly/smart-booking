@@ -138,13 +138,41 @@ class ListController extends ApiController
     {
         $bookings = Booking::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
 
+        // add some property
+        foreach ($bookings as $booking) {
+            // get parent name
+            $booking->floor_name    = $booking->desk->sector->floor->name;
+            $booking->sector_name   = $booking->desk->sector->name;
+            $booking->desk_name     = $booking->desk->name;
+            unset($booking->desk);
+
+            // get time detail
+            $booking->time;
+        }
+
         return $this->sendResponse('', $bookings);
     }
 
     public function bookingToday($user_id)
     {
         $today = Carbon::today()->toDateString();
-        $bookings = Booking::where('user_id', $user_id)->where('date', $today)->orderBy('created_at', 'desc')->get();
+        $bookings = Booking::where('user_id', $user_id)->where('date', $today)
+            ->orderByRaw("FIELD(status , 'checked-in', 'booked', 'checked-out', 'cancelled') ASC")
+            ->whereHas('time', function ($query) {
+                $query->orderBy('start', 'asc');
+            })->get();
+
+        // add some property
+        foreach ($bookings as $booking) {
+            // get parent name
+            $booking->floor_name    = $booking->desk->sector->floor->name;
+            $booking->sector_name   = $booking->desk->sector->name;
+            $booking->desk_name     = $booking->desk->name;
+            unset($booking->desk);
+
+            // get time detail
+            $booking->time;
+        }
 
         return $this->sendResponse('', $bookings);
     }

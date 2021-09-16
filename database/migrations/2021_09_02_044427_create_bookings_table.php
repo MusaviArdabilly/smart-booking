@@ -19,8 +19,6 @@ class CreateBookingsTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('desk_id')->nullable();
             $table->date('date');
-            $table->time('start_time');
-            $table->time('end_time');
             $table->enum('status', ['booked', 'checked-in', 'checked-out', 'canceled'])->default('booked');
             $table->timestamps();
 
