@@ -32,9 +32,9 @@
                         </div>
                         </p>
                     @endif
-                    <form action="{{ route('floor.sector.desk.store', ['$floor->id', '$sector->id']) }}" method="POST">
+                    <form action="{{ route('floor.sector.desk.store', [$floor->id, $sector->id]) }}" method="POST">
                         @csrf
-                        <input type="hidden" id="sector_id" name="{{ $sector->id }}">
+                        <input type="hidden" id="sector_id" name="sector_id" value="{{ $sector->id }}">
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" autofocus>
