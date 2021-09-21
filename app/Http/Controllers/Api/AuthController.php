@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends ApiController
 {
@@ -19,29 +20,34 @@ class AuthController extends ApiController
             'password'  => ['required', 'string', 'min:8', 'confirmed'],
         ]);
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            return $this->sendError('Validation Error', $validator->errors());
         }
 
-        $input = $request->all();
-        $input['passowrd'] = bcrypt($input['password']);
-        $user = User::create($input);
+        $user = User::create([
+            'name'      => $request->name,
+            'username'  => $request->username,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+        ]);
 
-        $success['token'] = $user->createToken(NULL)->accessToken;
-        $success['name'] = $user->name;
+        // not auto login
+        // $success['token'] = $user->createToken(NULL)->accessToken;
+        // $success['name'] = $user->name;
 
-        return $this->sendResponse('User login successfully', $success);
+        return $this->sendResponse('User created successfully', $user);
     }
 
     public function login(Request $request)
     {
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] = $user->createToken(NULL)->accessToken;
-            $success['name'] = $user->name;
+            $success['user_id'] = $user->id;
+            $success['name']    = $user->name;
+            $success['token']   = $user->createToken(NULL)->accessToken;
 
             return $this->sendResponse('User login successfully', $success);
         } else {
-            return $this->sendError('Unauthorized' . ['error' => 'Unauthorized']);
+            return $this->sendError('Unauthorized', ['error' => "Username or Password doesn't match"]);
         }
     }
 }
