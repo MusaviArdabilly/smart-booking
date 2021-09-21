@@ -15,17 +15,17 @@
         }
 
         /* #table.dataTable.no-footer {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-bottom: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-bottom: unset;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         /* #table tbody td {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    display: block;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    display: block;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border: unset;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                #table>tbody>tr>td {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-top: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                #table>tbody>tr>td {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-top: unset;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         .card-text {
             white-space: nowrap;
@@ -42,12 +42,16 @@
         }
 
         /* .toolbar {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    float: left;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    float: left;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         /* .breadcrumb {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                padding: 2px 15px !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                padding: 2px 15px !important;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
+        .pdfobject-container {
+            height: 30rem;
+            border: 1rem solid rgba(0, 0, 0, .1);
+        }
 
     </style>
 @endsection
@@ -100,10 +104,10 @@
                                         <td>{{ $assessment->created_at }}</td>
                                         <td>{{ $assessment->expires_at }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-danger btn-circle btn-sm mb-1" data-toggle="modal"
+                                            <a href="#" class="btn btn-info btn-circle btn-sm mb-1" data-toggle="modal"
                                                 data-target="#deleteModal" data-id="{{ $assessment->id }}"
                                                 data-url={{ $assessment->getFirstMediaUrl('assessments', 'thumb') }}>
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -125,12 +129,11 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete</h5>
+                    <h5 class="modal-title">Assessment Pdf Preview</h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure want to delete this user?</p>
-                    <div id="example1"></div>
+                    <div id="pdf-viewer"></div>
                 </div>
                 {{-- <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
@@ -180,11 +183,11 @@
         $('#deleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             var id = button.data('id'); // Extract info from data-* attributes
-            var url = button.data('url') + '#toolbar=0';
+            var url = button.data('url') + '#toolbar=1';
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
             var modal = $(this);
             var form = document.getElementById("deleteForm");
-            PDFObject.embed(url, "#example1");
+            PDFObject.embed(url, "#pdf-viewer");
             // let url = "{{ route('user.destroy', ':id') }}";
             // url = url.replace(':id', id);
             // form.action = url;
