@@ -103,6 +103,13 @@
                     <span>Bookings</span></a>
             </li>
 
+            <!--Assessments-->
+            <li class="nav-item {{ Route::is('assessment*') ? 'active' : '' }}">
+                <a class="nav-link w-100" href="{{ route('assessment.index') }}">
+                    <i class="fas fa-book-open fa-fw"></i>
+                    <span>Assessments</span></a>
+            </li>
+
             {{-- @if (Auth::user())
                 @if (Auth::user()->level === 'admin') --}}
             <!-- Nav Item - Master Collapse Menu -->
@@ -259,7 +266,7 @@
                 <div class="modal-body">Are you sure want to Logout?</div>
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <form id="logout-form" action="#" method="POST">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button class="btn btn-primary" type="submit">Yes, Logout</button>
                     </form>

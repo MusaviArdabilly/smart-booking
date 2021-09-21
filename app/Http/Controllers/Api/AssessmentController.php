@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Assessment;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
 class AssessmentController extends ApiController

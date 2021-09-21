@@ -23,8 +23,8 @@ class Assessment extends Model implements HasMedia
         'expires_at',
     ];
 
-    public function sectors()
+    public function user()
     {
-        return $this->hasMany('App\Models\AssessmentDetail');
+        return $this->belongsTo('App\Models\User');
     }
 }

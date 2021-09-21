@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DeskController;
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\AssessmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,4 +49,6 @@ $router->group(['prefix' => 'admin', 'middleware' => 'is_admin'], function () us
     Route::get('booking', [BookingController::class, 'index'])->name('booking.index');
     Route::get('booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
     Route::get('booking/{booking}/checkout', [BookingController::class, 'checkout'])->name('booking.checkout');
+
+    Route::get('assessment', [AssessmentController::class, 'index'])->name('assessment.index');
 });

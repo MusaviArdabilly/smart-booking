@@ -16,11 +16,17 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::orderByRaw("FIELD(status , 'checked-in', 'booked', 'checked-out', 'cancelled') ASC")->get();
+        $bookings = Booking::orderByRaw("FIELD(status , 'checked-in', 'booked', 'checked-out', 'cancelled') ASC")
+            ->orderBy('date', 'desc')->get();
         // return $bookings;
         foreach ($bookings as $booking) {
-            $booking->start_time = Carbon::createFromFormat('H:i:s', $booking->start_time)->format('H:i');
-            $booking->end_time = Carbon::createFromFormat('H:i:s', $booking->end_time)->format('H:i');
+            try {
+                //code...
+                $booking->start_time = Carbon::createFromFormat('H:i:s', $booking->time->start)->format('H:i');
+                $booking->end_time = Carbon::createFromFormat('H:i:s', $booking->time->end)->format('H:i');
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
             // $booking->status = ucfirst($booking->status);
         }
         return view('admin.booking.index', compact('bookings'));
