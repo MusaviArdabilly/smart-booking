@@ -15,17 +15,17 @@
         }
 
         /* #table.dataTable.no-footer {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-bottom: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-bottom: unset;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         /* #table tbody td {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    display: block;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    display: block;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border: unset;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                #table>tbody>tr>td {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-top: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                #table>tbody>tr>td {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-top: unset;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         .card-text {
             white-space: nowrap;
@@ -42,12 +42,12 @@
         }
 
         /* .toolbar {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    float: left;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    float: left;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         /* .breadcrumb {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                padding: 2px 15px !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                padding: 2px 15px !important;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
         .pdfobject-container {
             height: 30rem;
             border: 1rem solid rgba(0, 0, 0, .1);
@@ -77,7 +77,7 @@
 
         <div class="col">
             <div class="card shadow mb-4">
-                <div class="card-header"><strong>Booking List</strong></div>
+                <div class="card-header"><strong>Assessment List</strong></div>
                 <div class="card-body">
 
                     <div class="table-responsive">
@@ -105,7 +105,7 @@
                                         <td>{{ $assessment->expires_at }}</td>
                                         <td>
                                             <a href="#" class="btn btn-info btn-circle btn-sm mb-1" data-toggle="modal"
-                                                data-target="#deleteModal" data-id="{{ $assessment->id }}"
+                                                data-target="#previewModal" data-id="{{ $assessment->id }}"
                                                 data-url={{ $assessment->getFirstMediaUrl('assessments', 'thumb') }}>
                                                 <i class="fas fa-eye"></i>
                                             </a>
@@ -124,7 +124,7 @@
     </div>
 
     <!-- Modal -->
-    <div id="deleteModal" class="modal fade" role="dialog">
+    <div id="previewModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
             <!-- Modal content-->
             <div class="modal-content">
@@ -160,7 +160,6 @@
     <script src="{{ asset('fileinput/themes/fa/theme.min.js') }}"></script>
     <script src="{{ asset('js/pdfobject.js') }}"></script>
 
-
     <script type="text/javascript">
         $(document).ready(function() {
             table = $('#table').DataTable({
@@ -180,13 +179,13 @@
             });
         });
 
-        $('#deleteModal').on('show.bs.modal', function(event) {
+        $('#previewModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             var id = button.data('id'); // Extract info from data-* attributes
             var url = button.data('url') + '#toolbar=1';
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
             var modal = $(this);
-            var form = document.getElementById("deleteForm");
+            // var form = document.getElementById("deleteForm");
             PDFObject.embed(url, "#pdf-viewer");
             // let url = "{{ route('user.destroy', ':id') }}";
             // url = url.replace(':id', id);

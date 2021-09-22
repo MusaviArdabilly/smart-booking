@@ -21,13 +21,14 @@ class BookingController extends Controller
         // return $bookings;
         foreach ($bookings as $booking) {
             try {
-                //code...
-                $booking->start_time = Carbon::createFromFormat('H:i:s', $booking->time->start)->format('H:i');
-                $booking->end_time = Carbon::createFromFormat('H:i:s', $booking->time->end)->format('H:i');
+                $start_time = Carbon::createFromFormat('H:i:s', $booking->time->start)->format('H:i');
+                $end_time = Carbon::createFromFormat('H:i:s', $booking->time->end)->format('H:i');
+                $booking->time = $start_time . '-' . $end_time;
             } catch (\Throwable $th) {
-                //throw $th;
+                $booking->time = '-';
             }
             // $booking->status = ucfirst($booking->status);
+            $booking->desk = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
         }
         return view('admin.booking.index', compact('bookings'));
     }

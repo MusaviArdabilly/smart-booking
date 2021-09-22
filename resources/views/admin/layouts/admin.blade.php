@@ -106,7 +106,7 @@
             <!--Assessments-->
             <li class="nav-item {{ Route::is('assessment*') ? 'active' : '' }}">
                 <a class="nav-link w-100" href="{{ route('assessment.index') }}">
-                    <i class="fas fa-book-open fa-fw"></i>
+                    <i class="fas fa-file-alt fa-fw"></i>
                     <span>Assessments</span></a>
             </li>
 

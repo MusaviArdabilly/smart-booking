@@ -16,7 +16,7 @@ class AssessmentController extends Controller
      */
     public function index()
     {
-        $assessments = Assessment::all();
+        $assessments = Assessment::orderBy('created_at', 'desc')->get();
         // orderByRaw("FIELD(status , 'checked-in', 'booked', 'checked-out', 'cancelled') ASC")
         //     ->orderBy('date', 'desc')->get();
         // return $assessments;
