@@ -66,4 +66,23 @@ class AssessmentController extends ApiController
 
         return $this->sendResponse('Assessment created succesfully', $assessment);
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Assessment  $assessment
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Assessment $assessment)
+    {
+        $media = $assessment->getMedia();
+        try {
+            $assessment->media_url = $assessment->media[0]->getUrl();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        unset($assessment->media);
+
+        return $this->sendResponse('', $assessment);
+    }
 }
