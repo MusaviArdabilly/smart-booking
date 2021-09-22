@@ -125,10 +125,6 @@
                                                 data-time="{{ $booking->time }}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('booking.show', $booking->id) }}"
-                                                class="btn btn-info btn-circle btn-sm mb-1">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
                                         </td>
                                     </tr>
                                 @empty
