@@ -29,10 +29,7 @@ class AuthController extends ApiController
             'email'     => $request->email,
             'password'  => Hash::make($request->password),
         ]);
-
-        // not auto login
-        // $success['token'] = $user->createToken(NULL)->accessToken;
-        // $success['name'] = $user->name;
+        $user->token = $user->createToken(NULL)->accessToken;
 
         return $this->sendResponse('User created successfully', $user);
     }
