@@ -72,14 +72,12 @@ class SectorController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // $unique_name = md5($request->file('photo')->getClientOriginalName() . time()); // rename file
-            // $unique_name_ext = $unique_name . '.' . $request->file('photo')->extension(); // add ext. back
-            // $sector->addMediaFromRequest('photo')->usingName($unique_name)->usingFileName($unique_name_ext)->toMediaCollection('photos');
-
-            // can't rename the file
+            $photos = request()->allFiles()['photo'];
             $fileAdders = $sector->addMultipleMediaFromRequest(['photo'])
-                ->each(function ($fileAdder) {
-                    $fileAdder->toMediaCollection('sectors');
+                ->each(function ($fileAdder, $i) use ($photos) {
+                    $fileAdder->preservingOriginal()
+                        ->usingFileName($photos[$i++]->hashName())
+                        ->toMediaCollection('sectors');
                 });
         }
 

@@ -66,10 +66,7 @@ class FloorController extends Controller
         ]);
 
         if ($request->hasFile('map')) {
-            // $unique_name = md5($request->file('map')->getClientOriginalName() . time()); // rename file
-            // $unique_name_ext = $unique_name . '.' . $request->file('map')->extension(); // add ext. back
-            // $floor->addMediaFromRequest('map')->usingName($unique_name)->usingFileName($unique_name_ext)->toMediaCollection('maps');
-            $floor->addMediaFromRequest('map')->toMediaCollection('maps');
+            $floor->addMediaFromRequest('map')->usingFileName($request->file('map')->hashName())->toMediaCollection('maps');
         }
 
         return redirect()->route('floor.index')
@@ -120,17 +117,12 @@ class FloorController extends Controller
         if ($request->hasFile('map')) {
             try {
                 // delete old media
-                if ($floor->media[0]) {
-                    $floor->media[0]->delete();
-                }
+                $floor->media[0]->delete();
             } catch (\Throwable $th) {
                 //
             }
             // create new media
-            // $unique_name = md5($request->file('map')->getClientOriginalName() . time()); // rename file
-            // $unique_name_ext = $unique_name . '.' . $request->file('map')->extension(); // add ext. back
-            // $floor->addMediaFromRequest('map')->usingName($unique_name)->usingFileName($unique_name_ext)->toMediaCollection('maps');
-            $floor->addMediaFromRequest('map')->toMediaCollection('maps');
+            $floor->addMediaFromRequest('map')->usingFileName($request->file('map')->hashName())->toMediaCollection('maps');
         }
 
         return redirect()->route('floor.index')

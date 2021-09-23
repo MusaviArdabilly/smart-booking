@@ -67,7 +67,7 @@ class AssessmentController extends ApiController
         ]);
 
         if ($request->hasFile('file')) {
-            $assessment->addMediaFromRequest('file')->toMediaCollection('assessments');
+            $assessment->addMediaFromRequest('file')->usingFileName($request->file('file')->hashName())->toMediaCollection('assessments');
         }
 
         return $this->sendResponse('Assessment created succesfully', $assessment);
