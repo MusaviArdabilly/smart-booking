@@ -20,31 +20,11 @@ class UserController extends Controller
         foreach ($users as $user) {
             if (empty($user->phone)) {
                 $user->phone = '-';
-                $user->role = ucfirst($user->role);
             }
+            $user->role = ucfirst($user->role);
         }
         return view('admin.user.index', compact('users'));
-        // return view('admin.user.index');
     }
-
-    // /**
-    //  * Display a listing of the resource.
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function list()
-    // {
-    //     $users = User::all();
-    //     foreach ($users as $user) {
-    //         if (isEmpty($user->phone)) {
-    //             $user->phone = '-';
-    //             $user->role = ucfirst($user->role);
-    //         }
-    //     }
-
-    //     return response()->json(['data' => $users]);
-    //     // return view('admin.user.index', compact('users'));
-    // }
 
     /**
      * Show the form for creating a new resource.
@@ -64,13 +44,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // // rules validator
-        // $validate = $request->validate([
-        //     'sector_id'     => ['required'],
-        //     'name'          => ['required', 'string', 'max:255'],
-        //     'description'   => ['nullable', 'string', 'max:255'],
-        // ]);
-
+        // rules validator
         $validate = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'username'  => ['required', 'string', 'max:255', 'unique:users', 'alpha_dash'],
@@ -78,12 +52,6 @@ class UserController extends Controller
             'phone'     => ['string', 'max:255'],
             'password'  => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-
-        // create new user
-        // $user = User::create([
-        //     'name'          => $request->name,
-        //     'description'   => $request->description,
-        // ]);
 
         $user = User::create([
             'name'      => $request->name,
@@ -94,10 +62,8 @@ class UserController extends Controller
             'role'      => $request->role,
         ]);
 
-        // // return redirect()->route('desk.index')
-        // //     ->with('success', 'Desk created successfully.');
         return redirect()->route('user.index')
-            ->with('success', 'User created successfully.');
+            ->with('success', 'User created successfully');
     }
 
     /**
@@ -159,7 +125,7 @@ class UserController extends Controller
         $user->update($request->all());
 
         return redirect()->route('user.index')
-            ->with('success', 'User updated successfully.');
+            ->with('success', 'User updated successfully');
     }
 
     /**
@@ -173,6 +139,6 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('user.index')
-            ->with('success', 'Floor deleted successfully.');
+            ->with('success', 'Floor deleted successfully');
     }
 }
