@@ -40,16 +40,15 @@
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" autofocus
-                                value="{{ $sector->name }}">
+                                value="{{ old('name') ? old('name') : $sector->name }}">
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea class="form-control" id="description" name="description" cols="30"
-                                rows="4">{{ $sector->description }}</textarea>
+                            <textarea class="form-control" id="description" name="description" cols="30" rows="4"
+                                style="resize: none;">{{ old('description') ? old('description') : $sector->description }}</textarea>
                         </div>
                         <div class="form-group">
-                            <label for="description">Map</label>
-                            {{-- <img src="{{ $floor->getFirstMediaUrl('map', 'thumb') }}" / width="120px"> --}}
+                            <label for="description">Photos (.jpg, .jpeg, .png)</label>
                             <input type="file" class="form-control" id="file" name="photo[]" multiple>
                         </div>
                         <div class="row mb-1">
@@ -91,7 +90,7 @@
                 showClose: false,
                 showCancel: false,
                 showRemove: false,
-                allowedFileExtensions: ['svg', 'jpg', 'png'],
+                allowedFileExtensions: ['jpg', 'jpeg', 'png'],
                 // overwriteInitial: false,
                 autoReplace: true,
                 overwriteInitial: true,

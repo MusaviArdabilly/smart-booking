@@ -8,12 +8,7 @@
         #table {
             table-layout: fixed;
             width: 99% !important;
-            /* width: 97% !important; */
         }
-
-        /* #table.dataTable.no-footer {
-                                                                                                                                                                                                                                border-bottom: unset;
-                                                                                                                                                                                                                            } */
 
         #table tbody td {
             display: block;
@@ -41,10 +36,6 @@
         .toolbar {
             float: left;
         }
-
-        /* .breadcrumb {
-                                                                                                                                                                                                                                                                                                            padding: 2px 15px !important;
-                                                                                                                                                                                                                                                                                                        } */
 
     </style>
 @endsection
@@ -81,12 +72,11 @@
             <div class="card shadow mb-4">
                 <div class="card-header"><strong>Floor Detail</strong></div>
                 <div class="card-body">
-                    <div class="row">
 
+                    <div class="row">
                         <div class="col">
                             <div class="table-responsive">
-                                <table class="table table-sm table-borderless display responsive nowrap" id="" width="100%"
-                                    cellspacing="0">
+                                <table class="table table-sm table-borderless display responsive" cellspacing="0">
                                     <tr>
                                         <td style="max-width: 20%; width:20%">Floor ID</td>
                                         <td style="max-width: 1%; width:1%">:</td>
@@ -117,8 +107,6 @@
                                                 @php
                                                     $i++;
                                                 @endphp
-                                                {{-- <img src="{{ $item->getUrl() }}" alt="" class="img-thumbnail"
-                                        style="max-height: 300px"> --}}
                                                 <img class="d-block" src="{{ $item->getUrl() }}" alt=""
                                                     style="height:300px; max-height: 300px; margin:auto">
                                             </div>
@@ -153,8 +141,7 @@
                 <div class="card-body">
 
                     <div class="table-responsive">
-                        <table class="table table-bordered display responsive nowrap" id="table" width="100%"
-                            cellspacing="0">
+                        <table class="table table-bordered display responsive nowrap" id="table" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>#</th>

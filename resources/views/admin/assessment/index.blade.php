@@ -10,22 +10,8 @@
     <style>
         #table {
             table-layout: fixed;
-            /* width: 98% !important; */
-            /* width: 97% !important; */
+            width: 100% !important;
         }
-
-        /* #table.dataTable.no-footer {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-bottom: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
-
-        /* #table tbody td {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    display: block;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                #table>tbody>tr>td {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    border-top: unset;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
 
         .card-text {
             white-space: nowrap;
@@ -41,13 +27,6 @@
             background-color: #366bbd;
         }
 
-        /* .toolbar {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    float: left;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
-
-        /* .breadcrumb {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                padding: 2px 15px !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
         .pdfobject-container {
             height: 30rem;
             border: 1rem solid rgba(0, 0, 0, .1);
@@ -81,8 +60,7 @@
                 <div class="card-body">
 
                     <div class="table-responsive">
-                        <table class="table table-bordered table-responsive display nowrap" id="table" width="100%"
-                            cellspacing="0">
+                        <table class="table table-bordered table-responsive display" id="table" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th width="4%">#</th>

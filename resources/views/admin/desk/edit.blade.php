@@ -39,12 +39,12 @@
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" autofocus
-                                value="{{ $desk->name }}">
+                                value="{{ old('name') ? old('name') : $desk->name }}">
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea class="form-control" id="description" name="description" cols="30"
-                                rows="4">{{ $desk->description }}</textarea>
+                            <textarea class="form-control" id="description" name="description" cols="30" rows="4"
+                                style="resize: none;">{{ old('description') ? old('description') : $desk->description }}</textarea>
                         </div>
                         <div class="row mb-1">
                             <div class="col">

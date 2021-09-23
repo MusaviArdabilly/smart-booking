@@ -39,15 +39,16 @@
                         <input type="hidden" name="floor_id" value="{{ $floor->id }}">
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" autofocus>
+                            <input type="text" class="form-control" id="name" name="name" autofocus
+                                value="{{ old('name') }}">
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea class="form-control" id="description" name="description" cols="30"
-                                rows="4"></textarea>
+                            <textarea class="form-control" id="description" name="description" cols="30" rows="4"
+                                style="resize: none;">{{ old('description') }}</textarea>
                         </div>
                         <div class="form-group">
-                            <label for="description">Photo (.png, .jpg, .jpeg) (max 6)</label>
+                            <label for="description">Photo (.png, .jpg, .jpeg)</label>
                             <input type="file" class="form-control" id="file" name="photo[]" multiple>
                         </div>
                         <div class="row mb-1">

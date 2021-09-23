@@ -10,10 +10,6 @@
             width: 99% !important;
         }
 
-        /* #table.dataTable.no-footer {
-                                                                                                                                                                                                                                                                                                                                                        border-bottom: unset;
-                                                                                                                                                                                                                                                                                                                                                    } */
-
         #table tbody td {
             display: block;
             border: unset;
@@ -41,16 +37,7 @@
             float: left;
         }
 
-        /* .breadcrumb {
-                                                                                                                                                                                                                                                                                                                                                                        padding: 2px 15px !important;
-                                                                                                                                                                                                                                                                                                                                                                    } */
-
     </style>
-
-    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.2/css/fileinput.min.css" media="all"
-        rel="stylesheet" type="text/css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="all"
-        rel="stylesheet" type="text/css" />
 @endsection
 
 @section('content') <nav aria-label="breadcrumb">
@@ -81,12 +68,11 @@
             <div class="card shadow mb-4">
                 <div class="card-header"><strong>Floor Detail</strong></div>
                 <div class="card-body">
-                    <div class="row">
 
+                    <div class="row">
                         <div class="col">
                             <div class="table-responsive">
-                                <table class="table table-sm table-borderless display responsive nowrap" id="" width="100%"
-                                    cellspacing="0">
+                                <table class="table table-sm table-borderless display responsive" cellspacing="0">
                                     <tr>
                                         <td style="max-width: 20%; width:20%">Floor ID</td>
                                         <td style="max-width: 1%; width:1%">:</td>
@@ -130,8 +116,7 @@
                 <div class="card-body">
 
                     <div class="table-responsive">
-                        <table class="table table-bordered display responsive nowrap" id="table" width="100%"
-                            cellspacing="0">
+                        <table class="table table-bordered display responsive nowrap" id="table" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>#</th>

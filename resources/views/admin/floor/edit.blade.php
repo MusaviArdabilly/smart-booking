@@ -37,16 +37,15 @@
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" autofocus
-                                value="{{ $floor->name }}">
+                                value="{{ old('name') ? old('name') : $floor->name }}">
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea class="form-control" id="description" name="description" cols="30"
-                                rows="4">{{ $floor->description }}</textarea>
+                            <textarea class="form-control" id="description" name="description" cols="30" rows="4"
+                                style="resize: none;">{{ old('description') ? old('description') : $floor->description }}</textarea>
                         </div>
                         <div class="form-group">
-                            <label for="description">Map</label>
-                            {{-- <img src="{{ $floor->getFirstMediaUrl('map', 'thumb') }}" / width="120px"> --}}
+                            <label for="description">Map (.svg)</label>
                             <input type="file" class="form-control" id="file" name="map">
                         </div>
                         <div class="row mb-1">

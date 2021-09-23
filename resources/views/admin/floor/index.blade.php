@@ -5,31 +5,10 @@
     <link href="{{ asset('datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('datatables/responsive/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
     <style>
-        /* .pop {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        width: 30px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        height: 30px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        overflow: hidden;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        position: relative;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .pop img {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        height: 100%;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        min-width: 100%;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        top: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        left: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        position: absolute;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        vertical-align: top;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        object-fit: contain;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } */
-
         #table {
             table-layout: fixed;
-            /* width: 99% !important; */
+            width: 99% !important;
         }
-
-        /* #table.dataTable.no-footer {
-                                    border-bottom: unset;
-                                } */
 
         #table tbody td {
             display: block;
@@ -44,9 +23,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            /* display: -webkit-box;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    -webkit-line-clamp: 3;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    -webkit-box-orient: vertical; */
         }
 
         .btn-secondary:hover,
@@ -73,15 +49,6 @@
             <span>{{ $message }}</span>
         </div>
     @elseif ($message = Session::get('error'))
-        {{-- <div class="row" id="proBanner">
-            <div class="col-12">
-                <span class="d-flex align-items-center purchase-popup alert alert-danger">
-                    <p>{{ $message }}</p>
-                    <i class="mdi mdi-close ml-auto" id="bannerClose"></i>
-                    <i class="fas fa-times"></i>
-                </span>
-            </div>
-        </div> --}}
         <div class="alert alert-dismissable alert-danger">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -89,14 +56,14 @@
             <span>{{ $message }}</span>
         </div>
     @endif
+
     <div class="row">
         <div class="col">
             <div class="card shadow mb-4">
                 <div class="card-header"><strong>Floor List</strong></div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered display responsive nowrap" id="table" width="100%"
-                            cellspacing="0">
+                        <table class="table table-bordered display responsive nowrap" id="table" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -106,15 +73,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @forelse ($floors as $floor)
-                                    <tr>
-                                        <td width="4%">{{ $loop->iteration }}</td>
-                                        <td>{{ $floor->id }}</td>
-                                        <td>{{ $floor->name }}</td>
-                                        <td>{{ $floor->description }}</td>
-                                    </tr>
-                                @empty
-                                @endforelse --}}
                             </tbody>
                         </table>
                     </div>
@@ -147,18 +105,6 @@
         </div>
     </div>
 
-    {{-- <!-- Modal for zooming image -->
-    <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-                            class="sr-only">Close</span></button>
-                    <img src="" class="imagepreview" style="width: 100%;">
-                </div>
-            </div>
-        </div>
-    </div> --}}
 @endsection
 
 @section('script')
@@ -168,55 +114,13 @@
     <script src="{{ asset('datatables/responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('datatables/responsive/js/responsive.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('datatables/sorting/natural.js') }}"></script>
-    <script type="text/javascript">
-        // $(document).ready(function() {
-        //     table = $('#table').DataTable({
-        //         columnDefs: [{
-        //                 orderable: false,
-        //                 targets: 0
-        //             },
-        //             {
-        //                 type: 'natural',
-        //                 targets: 1
-        //             },
-        //             {
-        //                 orderable: false,
-        //                 targets: 3
-        //             },
-        //         ],
-        //         order: [
-        //             [1, 'desc']
-        //         ],
-        //     });
-        //     table.on('order.dt search.dt', function() {
-        //         table.column(0, {
-        //             search: 'applied',
-        //             order: 'applied'
-        //         }).nodes().each(function(cell, i) {
-        //             cell.innerHTML = i + 1;
-        //         });
-        //     }).draw();
-        // })
-
-
-
-        // $(function() {
-        //     $(document).on("click", '.pop', function(event) {
-        //         $('.imagepreview').attr('src', $(this).find('img').attr('src'));
-        //         $('#imagemodal').modal('show');
-        //     });
-        // });
-    </script>
 
     <script type="text/javascript">
         $(document).ready(function() {
             $("#table thead").hide();
             let url_list = "{{ route('floor.list') }}";
             let url_create = "{{ route('floor.create') }}";
-            let url_edit = "{{-- route('floor.edit') --}}";
-            let url_destroy = "{{-- route('floor.destroy') --}}";
             var dt = $('#table').DataTable({
-                // ajax: "http://loremjson.itmilenial.com/getdata/user/people",
                 ajax: url_list,
                 bInfo: false,
                 pageLength: 12,
@@ -252,9 +156,14 @@
                             var desk = (row.number_of_desks == 0 || row.number_of_desks ==
                                 1) ? ' desk' : ' desks';
 
+                            // var media = "";
+                            // if (row.getMediaUrl[0]) {
+                            //     var media = row.getMediaUrl[0];
+                            // }
+
                             var html =
                                 '<div class="card shadow">' +
-                                // '  <img src="' + row.avatar + '" class="card-img-top">' +
+                                // '  <img src="' + row.getMediaUrl[0] + '" class="card-img-top">' +
                                 // '   <div class="card-header">' + row.name + '</div>' +
                                 '   <div class="card-body">' +
                                 '       <div class="float-right">' +
