@@ -33,7 +33,6 @@ Route::get('floor/list', [FloorController::class, 'index']);
 // });
 Route::get('sector/{floor}/list', [SectorController::class, 'index']);
 Route::get('desk/{sector}/list', [DeskController::class, 'index']);
-Route::get('desk/{sector}/list/available/', [DeskController::class, 'available']);
 
 Route::post('booking', [BookingController::class, 'store']);
 Route::get('booking/{booking}', [BookingController::class, 'show']);

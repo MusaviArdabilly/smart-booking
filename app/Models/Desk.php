@@ -25,4 +25,9 @@ class Desk extends Model
     {
         return $this->belongsTo('App\Models\Sector');
     }
+
+    public function booking()
+    {
+        return $this->hasMany('App\Models\Booking');
+    }
 }
