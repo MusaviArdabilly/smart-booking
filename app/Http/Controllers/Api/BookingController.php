@@ -32,7 +32,7 @@ class BookingController extends ApiController
             $booking->time;
         }
 
-        return $this->sendResponse('', $bookings);
+        return $this->sendResponse('Bookings listed succesfully', $bookings);
     }
 
     public function today($user_id)
@@ -56,7 +56,7 @@ class BookingController extends ApiController
             $booking->time;
         }
 
-        return $this->sendResponse('', $bookings);
+        return $this->sendResponse('Today Bookings listed succesfully', $bookings);
     }
 
     /**
@@ -95,7 +95,7 @@ class BookingController extends ApiController
             if ($end == $start_time) {
                 // do nothing if it's ended before already booked
             } else {
-                return $this->sendInvalid('Desk already booked at start time!', $booked_start);
+                return $this->sendInvalid('Desk already booked at start time', $booked_start);
             }
         }
 
@@ -111,7 +111,7 @@ class BookingController extends ApiController
             if ($start == $end_time) {
                 // do nothing if it's started after already booked
             } else {
-                return $this->sendInvalid('Desk already booked at end time!', $booked_end);
+                return $this->sendInvalid('Desk already booked at end time', $booked_end);
             }
         }
 
@@ -201,11 +201,9 @@ class BookingController extends ApiController
      */
     public function checkin(Request $request, Booking $booking)
     {
-        // $now    = Carbon::now()->format('Y-m-d  H:i');
-        // return $now;
         // desk check
         if ($booking->desk_id != $request->desk_id) {
-            return $this->sendInvalid('You in the wrong desk!', '');
+            return $this->sendInvalid('You in the wrong desk', '');
         }
 
         $today  = Carbon::today();
@@ -217,9 +215,9 @@ class BookingController extends ApiController
 
         // check if too soon / late
         if ($now < $start) {
-            return $this->sendInvalid('You need to wait!', '');
+            return $this->sendInvalid('You need to wait', '');
         } else if ($now > $end) {
-            return $this->sendInvalid('You are too late!', '');
+            return $this->sendInvalid('You are too late', '');
         }
 
         // booked/used desk
@@ -231,7 +229,7 @@ class BookingController extends ApiController
             })
             ->with('time')->first();
         if ($booked) {
-            return $this->sendInvalid('Your desk still being used!', '');
+            return $this->sendInvalid('Your desk still being used', '');
         }
 
         // update booking status
@@ -243,7 +241,7 @@ class BookingController extends ApiController
         // get time detail
         $booking->time;
 
-        return $this->sendResponse('You have been check-in!', $booking);
+        return $this->sendResponse('You have been check-in', $booking);
     }
 
     /**
@@ -256,7 +254,7 @@ class BookingController extends ApiController
     {
         // desk check
         if ($booking->desk_id != $request->desk_id) {
-            return $this->sendInvalid('You in the wrong desk!', '');
+            return $this->sendInvalid('You in the wrong desk', '');
         }
 
         // update booking status
@@ -267,6 +265,6 @@ class BookingController extends ApiController
         // get time detail
         $booking->time;
 
-        return $this->sendResponse('You have been check-out!', $booking);
+        return $this->sendResponse('You have been check-out', $booking);
     }
 }

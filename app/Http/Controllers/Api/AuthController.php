@@ -44,7 +44,7 @@ class AuthController extends ApiController
 
             return $this->sendResponse('User login successfully', $success);
         } else {
-            return $this->sendError('Unauthorized', ['error' => "Username or Password doesn't match"]);
+            return $this->sendError('Unauthenticated', ['error' => "Username or Password doesn't match"]);
         }
     }
 }

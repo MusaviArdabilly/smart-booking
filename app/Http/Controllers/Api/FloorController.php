@@ -28,6 +28,6 @@ class FloorController extends ApiController
             unset($floor->media);
         }
 
-        return $this->sendResponse('', $floors);
+        return $this->sendResponse('Floors listed succesfully', $floors);
     }
 }

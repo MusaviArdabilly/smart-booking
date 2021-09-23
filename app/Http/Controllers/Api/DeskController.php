@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Desk;
-use App\Models\Booking;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
 class DeskController extends ApiController
@@ -17,6 +17,17 @@ class DeskController extends ApiController
      */
     public function index(Request $request, $floor_id)
     {
+        // rules validator
+        $validator = Validator::make($request->all(), [
+            'date'          => ['required', 'date_format:Y-m-d'],
+            'start_time'    => ['required', 'date_format:H:i'],
+            'end_time'      => ['required', 'date_format:H:i', 'after:start_time'],
+        ]);
+        // response validate
+        if ($validator->fails()) {
+            return $this->sendInvalid('Validation errors', $validator->errors());
+        }
+
         $start  = Carbon::parse($request->start_time);
         $end    = Carbon::parse($request->end_time);
 
@@ -57,6 +68,6 @@ class DeskController extends ApiController
             $desk->is_available = 1;
         }
 
-        return $this->sendResponse('', $desks);
+        return $this->sendResponse('Desks listed succesfully', $desks);
     }
 }

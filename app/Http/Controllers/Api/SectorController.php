@@ -33,6 +33,6 @@ class SectorController extends ApiController
             unset($sector->media);
         }
 
-        return $this->sendResponse('', $sectors);
+        return $this->sendResponse('Sectors listed succesfully', $sectors);
     }
 }
