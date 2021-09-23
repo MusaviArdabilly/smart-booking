@@ -30,7 +30,7 @@ class AssessmentController extends ApiController
             unset($assessment->media);
         }
 
-        return $this->sendResponse('', $assessments);
+        return $this->sendResponse('Assessments listed succesfully', $assessments);
     }
 
     /**
@@ -52,12 +52,18 @@ class AssessmentController extends ApiController
             return $this->sendInvalid('Validation errors', $validator->errors());
         }
 
+        // check if user already stored one
+        $already = Assessment::where('user_id', $request->user_id)->whereDate('created_at', Carbon::today())->first();
+        if ($already) {
+            return $this->sendInvalid('Assessment already stored today', $already);
+        }
+
         // create new assessment
         $assessment = Assessment::create([
             'assess_id'     => 'AS' . Carbon::now()->format('YmdHis'),
             'user_id'       => $request->user_id,
             'point'         => $request->point,
-            'expires_at'    => Carbon::tomorrow(),
+            'expires_at'    => Carbon::today()->endOfDay(),
         ]);
 
         if ($request->hasFile('file')) {
