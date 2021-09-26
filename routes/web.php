@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\ProfileController;
+
 use App\Http\Controllers\Admin\FloorController;
 use App\Http\Controllers\Admin\SectorController;
 use App\Http\Controllers\Admin\DeskController;
@@ -35,6 +37,9 @@ Route::get('/admin/dashboard', function () {
 })->name('admin.dashboard');
 
 $router->group(['prefix' => 'admin', 'middleware' => 'is_admin'], function () use ($router) {
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('profile/{user}', [ProfileController::class, 'update'])->name('profile.update');
+
     Route::resource('user', UserController::class);
 
     Route::get('floor/list', [FloorController::class, 'list'])->name('floor.list');

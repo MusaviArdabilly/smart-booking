@@ -49,7 +49,7 @@ class UserController extends Controller
             'name'      => ['required', 'string', 'max:255'],
             'username'  => ['required', 'string', 'max:255', 'unique:users', 'alpha_dash'],
             'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone'     => ['string', 'max:255'],
+            'phone'     => ['numeric', 'digits_between:11,13', 'nullable'],
             'password'  => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
@@ -111,16 +111,18 @@ class UserController extends Controller
             ]);
         }
 
-        if ($request->password) {
-            $validate = $request->validate([
-                'password'  => ['required', 'string', 'min:8', 'confirmed'],
-            ]);
-        }
+        // if ($request->password) {
+        //     $validate = $request->validate([
+        //         'password'  => ['required', 'string', 'min:8', 'confirmed'],
+        //     ]);
+        //     $request->password = Hash::make($request->password);
+        // }
 
         $validate = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'username'  => ['required', 'string', 'max:255', 'alpha_dash'],
             'email'     => ['required', 'string', 'email', 'max:255'],
+            'phone'     => ['numeric', 'digits_between:11,13', 'nullable'],
         ]);
         $user->update($request->all());
 

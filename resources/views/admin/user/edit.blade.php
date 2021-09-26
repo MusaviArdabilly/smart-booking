@@ -33,17 +33,17 @@
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" autofocus
-                                value="{{ old('name') ? old('name') : $user->name }}">
+                                value="{{ old('name') ? old('name') : $user->name }}" required>
                         </div>
                         <div class="form-group">
                             <label for="username">Username</label>
                             <input type="text" class="form-control" id="username" name="username"
-                                value="{{ old('username') ? old('username') : $user->username }}">
+                                value="{{ old('username') ? old('username') : $user->username }}" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" class="form-control" id="email" name="email"
-                                value="{{ old('email') ? old('email') : $user->email }}">
+                                value="{{ old('email') ? old('email') : $user->email }}" required>
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone</label>
@@ -52,7 +52,7 @@
                         </div>
                         <div class="form-group">
                             <label for="role">Role</label>
-                            <select class="form-control" name="role" id="">
+                            <select class="form-control" name="role" id="" required>
                                 <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
                             </select>
