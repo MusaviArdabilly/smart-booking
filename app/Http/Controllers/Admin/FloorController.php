@@ -65,8 +65,8 @@ class FloorController extends Controller
             'description'   => $request->description,
         ]);
 
-        if ($request->hasFile('map')) {
-            $floor->addMediaFromRequest('map')->usingFileName($request->file('map')->hashName())->toMediaCollection('maps');
+        if ($request->hasFile('file')) {
+            $floor->addMediaFromRequest('file')->usingFileName($request->file('file')->hashName())->toMediaCollection('maps');
         }
 
         return redirect()->route('floor.index')
@@ -114,7 +114,7 @@ class FloorController extends Controller
         $floor->update($request->all());
 
         $media = $floor->getMedia();
-        if ($request->hasFile('map')) {
+        if ($request->hasFile('file')) {
             try {
                 // delete old media
                 $floor->media[0]->delete();
@@ -122,7 +122,7 @@ class FloorController extends Controller
                 //
             }
             // create new media
-            $floor->addMediaFromRequest('map')->usingFileName($request->file('map')->hashName())->toMediaCollection('maps');
+            $floor->addMediaFromRequest('file')->usingFileName($request->file('file')->hashName())->toMediaCollection('maps');
         }
 
         return redirect()->route('floor.index')

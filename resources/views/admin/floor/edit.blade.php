@@ -46,7 +46,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Map (.svg)</label>
-                            <input type="file" class="form-control" id="file" name="map">
+                            <input type="file" class="form-control" id="file" name="file">
                         </div>
                         <div class="row mb-1">
                             <div class="col">

@@ -49,7 +49,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Photos (.jpg, .jpeg, .png)</label>
-                            <input type="file" class="form-control" id="file" name="photo[]" multiple>
+                            <input type="file" class="form-control" id="file" name="file[]" multiple>
                         </div>
                         <div class="row mb-1">
                             <div class="col">

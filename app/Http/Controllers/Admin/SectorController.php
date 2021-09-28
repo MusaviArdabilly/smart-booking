@@ -71,12 +71,12 @@ class SectorController extends Controller
             'description'   => $request->description,
         ]);
 
-        if ($request->hasFile('photo')) {
-            $photos = request()->allFiles()['photo'];
-            $fileAdders = $sector->addMultipleMediaFromRequest(['photo'])
-                ->each(function ($fileAdder, $i) use ($photos) {
+        if ($request->hasFile('file')) {
+            $files = request()->allFiles()['file'];
+            $fileAdders = $sector->addMultipleMediaFromRequest(['file'])
+                ->each(function ($fileAdder, $i) use ($files) {
                     $fileAdder->preservingOriginal()
-                        ->usingFileName($photos[$i++]->hashName())
+                        ->usingFileName($files[$i++]->hashName())
                         ->toMediaCollection('sectors');
                 });
         }
