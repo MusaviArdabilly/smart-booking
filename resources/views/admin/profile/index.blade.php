@@ -20,6 +20,8 @@
         }
 
     </style>
+
+    <link href="{{ asset('fileinput/css/fileinput.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -56,7 +58,7 @@
         <div class="col-lg-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <strong class="m-0 font-weight-bold text-primary">Profile Picture</strong>
+                    <strong class="m-0 font-weight-bold text-primary">Avatar</strong>
                 </div>
                 <div class="card-body">
                     <div class="col text-center align-self-center">
@@ -64,17 +66,15 @@
                             <div href="#" class="pop">
                                 <img src="{{ $user->getFirstMediaUrl('avatars', 'thumb') }}" alt=""
                                     class="img-thumbnail rounded-circle">
-
                             </div>
-                            {{-- <div href="#" class="pop">
-                                <img width="30" src="{{ asset('images/users') }}/{{ $user->photo }}"
-                                    alt="{{ $user->photo }}" class="img-thumbnail rounded-circle">
-                            </div> --}}
                         @else
                             <div class="img-thumbnail">
                                 No Image
                             </div>
                         @endif
+                        <a href="#" class="btn btn-primary btn-block mb-1 mt-4" data-toggle="modal"
+                            data-target="#imageModal">Change Avatar
+                        </a>
                     </div>
                 </div>
             </div>
@@ -172,29 +172,94 @@
             </div>
         </div>
 
-        <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <button type="button" class="close" data-dismiss="modal"><span
-                                aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        {{-- <img src="" class="imagepreview" style="width: 100%;"> --}}
+        <!-- Modal -->
+        <div id="imageModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <!-- Modal content-->
+                <form action="{{ route('profile.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Avatar Preview</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="file" class="form-control" id="file" name="file">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="delete-btn"><strong>Update</strong></button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     @endsection
 
     @section('script')
+        <script src="{{ asset('fileinput/js/fileinput.min.js') }}"></script>
+        <script src="{{ asset('fileinput/themes/fa/theme.min.js') }}"></script>
         <script>
-            $(function() {
-                $(document).on("click", '.pop', function(event) {
-                    // $('.imagepreview').attr('src', $(this).find('img').attr('src'));
-                    $('#imagemodal').modal('show');
+            $('#imageModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var modal = $(this);
+            })
+
+            var imageUrl = "{{ $user->getFirstMediaUrl('avatars', 'thumb') }}";
+            if (imageUrl != "") {
+                var initialPreview = [
+                    "{{ $user->getFirstMediaUrl('avatars', 'thumb') }}",
+                ];
+                var initialPreviewConfig = [{
+                    type: "image",
+                    caption: "{{ isset($user->media[0]) ? $user->media[0]->file_name : '' }}",
+                    size: "{{ isset($user->media[0]) ? $user->media[0]->size : '' }}",
+                    // url: "/site/file-delete",
+                    key: 1
+                }, ];
+                $("#file").fileinput({
+                    theme: 'fa',
+                    showUpload: false,
+                    showClose: false,
+                    showCancel: false,
+                    showRemove: false,
+                    allowedFileExtensions: ['svg', 'jpg', 'png'],
+                    // overwriteInitial: false,
+                    autoReplace: true,
+                    overwriteInitial: true,
+                    showUploadedThumbs: false,
+                    maxFileCount: 1,
+                    initialPreview: initialPreview,
+                    initialPreviewAsData: true,
+                    initialPreviewConfig: initialPreviewConfig,
+                    initialPreviewFileType: 'image',
+                    initialPreviewShowDelete: false,
+                    maxFileSize: 2000,
+                    maxFilesNum: 10,
+                    slugCallback: function(filename) {
+                        return filename.replace('(', '_').replace(']', '_');
+                    }
                 });
-
-
-            });
+            } else {
+                $("#file").fileinput({
+                    theme: 'fa',
+                    showUpload: false,
+                    showClose: false,
+                    showCancel: false,
+                    allowedFileExtensions: ['svg', 'jpg', 'png'],
+                    overwriteInitial: false,
+                    maxFileCount: 1,
+                    // initialPreview: initialPreview,
+                    initialPreviewAsData: true,
+                    // initialPreviewConfig: initialPreviewConfig,
+                    initialPreviewFileType: 'image',
+                    initialPreviewShowDelete: false,
+                    maxFileSize: 2000,
+                    maxFilesNum: 10,
+                    slugCallback: function(filename) {
+                        return filename.replace('(', '_').replace(']', '_');
+                    }
+                });
+            }
         </script>
     @endsection

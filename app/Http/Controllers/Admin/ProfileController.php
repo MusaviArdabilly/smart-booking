@@ -72,7 +72,22 @@ class ProfileController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // return $request->all();
+        // avatar update
+        if ($request->hasFile('file')) {
+            $media = $user->getMedia();
+            try {
+                // delete old media
+                $user->media[0]->delete();
+            } catch (\Throwable $th) {
+                //
+            }
+            // create new media
+            $user->addMediaFromRequest('file')->usingFileName($request->file('file')->hashName())->toMediaCollection('avatars');
+
+            return redirect()->route('profile.index')
+                ->with('success', 'Avatar updated successfully');
+        }
+
         // password update
         if ($request->password) {
             $validate = $request->validate([
