@@ -38,7 +38,7 @@ class BookingController extends ApiController
     public function today($user_id)
     {
         $today = Carbon::today()->toDateString();
-        $bookings = Booking::where('user_id', $user_id)->where('date', $today)
+        $bookings = Booking::where('user_id', $user_id)->whereDate('date', $today)
             ->orderByRaw("FIELD(status , 'checked-in', 'booked', 'checked-out', 'cancelled') ASC")
             ->whereHas('time', function ($query) {
                 $query->orderBy('start', 'asc');
@@ -84,34 +84,66 @@ class BookingController extends ApiController
         $end    = Carbon::parse($request->end_time);
 
         // booked/used desk on start_time
-        $booked_start = Booking::where('desk_id', $request->desk_id)->where('date', $request->date)
+        $desk_start = Booking::where('desk_id', $request->desk_id)->whereDate('date', $request->date)
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('start', '>=', $start)
                     ->WhereTime('start', '<=', $end);
             })
             ->with('time')->first();
-        if ($booked_start) {
-            $start_time = Carbon::parse($booked_start->start_time);
+        if ($desk_start) {
+            $start_time = Carbon::parse($desk_start->time->start);
             if ($end == $start_time) {
                 // do nothing if it's ended before already booked
             } else {
-                return $this->sendInvalid('Desk already booked at start time', $booked_start);
+                return $this->sendInvalid('Desk already booked at start time', $desk_start);
             }
         }
 
         // booked/used desk on end_time
-        $booked_end = Booking::where('desk_id', $request->desk_id)->where('date', $request->date)
+        $desk_end = Booking::where('desk_id', $request->desk_id)->whereDate('date', $request->date)
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('end', '>=', $start)
                     ->WhereTime('end', '<=', $end);
             })
             ->with('time')->first();
-        if ($booked_end) {
-            $end_time = Carbon::parse($booked_end->time->end);
+        if ($desk_end) {
+            $end_time = Carbon::parse($desk_end->time->end);
             if ($start == $end_time) {
                 // do nothing if it's started after already booked
             } else {
-                return $this->sendInvalid('Desk already booked at end time', $booked_end);
+                return $this->sendInvalid('Desk already booked at end time', $desk_end);
+            }
+        }
+
+        // user already booked/used a desk on start_time
+        $user_start = Booking::where('user_id', $request->user_id)->whereDate('date', $request->date)
+            ->whereHas('time', function ($query) use ($start, $end) {
+                $query->whereTime('start', '>=', $start)
+                    ->WhereTime('start', '<=', $end);
+            })
+            ->with('time')->first();
+        if ($user_start) {
+            $start_time = Carbon::parse($user_start->time->start);
+            if ($end == $start_time) {
+                // do nothing if it's ended before already already
+            } else {
+                return $this->sendInvalid('You already booked a desk at start time', $user_start);
+            }
+        }
+
+        // user already booked/used a desk on end_time
+        $user_end = Booking::where('user_id', $request->user_id)->whereDate('date', $request->date)
+            ->whereHas('time', function ($query) use ($start, $end) {
+                $query->whereTime('end', '>=', $start)
+                    ->WhereTime('end', '<=', $end);
+            })
+            ->with('time')->first();
+        if ($user_end) {
+            $end_time = Carbon::parse($user_end->time->end);
+            if ($start == $end_time) {
+                // do nothing if it's started after already already
+            } else {
+                return $this->sendInvalid('You already booked a desk at end time', $user_end);
             }
         }
 
@@ -221,7 +253,7 @@ class BookingController extends ApiController
         }
 
         // booked/used desk
-        $booked = Booking::where('desk_id', $booking->desk_id)->where('date', $today)
+        $booked = Booking::where('desk_id', $booking->desk_id)->whereDate('date', $today)
             ->where('status', 'checked-in')
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('end', '>=', $start)
