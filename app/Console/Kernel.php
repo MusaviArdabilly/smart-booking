@@ -25,8 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('auto:cancel')->everyFifteenMinutes();
-        $schedule->command('auto:checkout')->everyFifteenMinutes();
+        $schedule->command('auto:cancel')->everyMinute();
+        $schedule->command('auto:checkout')->everyMinute();
     }
 
     /**
