@@ -20,6 +20,7 @@
         }
 
     </style>
+
 @endsection
 
 @section('content')
@@ -42,86 +43,280 @@
             </div>
         </div>
     @endif
-    <div>
-        <div class="row row-flex mb-4">
-            <div class="col-xl-6 col-md-6 col-6">
-                <div class="content content-settings bg-primary text-white shadow">
-                    <strong>@lang('home.title_stockin')</strong>
-                    <div class="text-white small">@lang('home.subtitle_stockin')</div>
-                    {{-- <a href="{{ action('StockInController@index') }}" class="stretched-link"></a> --}}
+
+    <h5 class="font-weight-bold" style="color: #5a5c69">Welcome back,
+        {{ isset(Auth::user()->name) ? Auth::user()->name : 'User' }}!</h5>
+    <h6 class="mb-4" style="color: #5a5c69">Here's what's happening with your building.</h6>
+
+    <div class="row">
+        <!-- Power consumption -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Floors</div>
+                            <div class="power-consumption-all h5 mb-0 font-weight-bold text-gray-800">{{ $count->floor }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="fas fa-building fa-fw fa-2x text-gray-300"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-xl-6 col-md-6 col-6">
-                <div class="content content-settings bg-success text-white shadow">
-                    <strong>@lang('home.title_stockout')</strong>
-                    <div class="text-white small">
-                        {{-- <mark style='color: #4e73df'><b>{{ $stocks->count() }}</b></mark>@lang('home.subtitle_stockout') --}}
+        </div>
+        <!-- Devices Status -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Sectors</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="device-status h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{ $count->sector }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-pie fa-fw fa-2x text-gray-300"></i>
+                        </div>
                     </div>
-                    {{-- <a href="{{ action('StockOutController@index') }}" class="stretched-link"></a> --}}
+                </div>
+            </div>
+        </div>
+        <!-- Desks -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Desk</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="paid-invoices h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{ $count->desk }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chair fa-fw fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Users -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Users</div>
+                            <div class="rate h5 mb-0 font-weight-bold text-gray-800">{{ $count->user }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-fw fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col">
             <div class="card shadow mb-4">
-                <div class="card-header text-primary"><b>@lang('list.stockout')</b></div>
+                <div class="card-header"><strong>Popular Desk</strong>
+                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered display responsive nowrap" id="table" width="100%"
                             cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>ID</th>
-                                    <th>@lang('table.date')</th>
-                                    <th>@lang('table.photo')</th>
-                                    <th>@lang('table.created_by')</th>
-                                    <th>@lang('table.status')</th>
-                                    <th>@lang('table.confirmation')</th>
-                                    <th>@lang('table.description')</th>
-                                    <th>@lang('table.action')</th>
+                                    <th width="4%">#</th>
+                                    <th>Name</th>
+                                    <th>Booked</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @forelse ($stocks as $stock)
+                                @forelse ($most->desks as $desk)
                                     <tr>
-                                        <td width="4%">{{ $loop->iteration }}</td>
-                                        <td>{{ $stock->id_transaction }}</td>
-                                        <td>{{ $stock->date }}</td>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $desk->name }}</td>
+                                        <td>{{ $desk->booking_count }} times</td>
+                                    </tr>
+                                @empty
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow mb-4">
+                <div class="card-header"><strong>Most Active User</strong>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered display responsive nowrap" id="table" width="100%"
+                            cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th width="4%">#</th>
+                                    <th>ID</th>
+                                    <th>Booking</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($most->users as $user)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->booking_count }} times</td>
+                                    </tr>
+                                @empty
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Power consumption -->
+        <div class="col mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Bookings Today / All
+                            </div>
+                            <div class="power-consumption-all h5 mb-0 font-weight-bold text-gray-800">
+                                {{ $count->booking_today }} / {{ $count->booking_all }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="fas fa-building fa-fw fa-2x text-gray-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Devices Status -->
+        <div class="col mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Assessments Today / All
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="device-status h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{ $count->assess_today }} / {{ $count->assess_all }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-pie fa-fw fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card shadow mb-4">
+                <div class="card-header"><strong>Recent created Booking</strong>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered display responsive nowrap" id="table" width="100%"
+                            cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th width="4%">#</th>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Duration</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($bookings as $booking)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $booking->book_id_1 }}<br>
+                                            {{ $booking->book_id_2 }}
+                                        </td>
+                                        <td>{{ $booking->user->name }}</td>
+                                        <td>{{ $booking->date }},<br>
+                                            {{ $booking->time }}
+                                        </td>
                                         <td>
-                                            <div href="#" class="pop">
-                                                <img width="30"
-                                                    src="{{ asset('images/users') }}/{{ $stock->create_by->photo }}"
-                                                    alt="{{ $stock->create_by->name }}"
-                                                    class="img-thumbnail rounded-circle">
-                                            </div>
-                                        </td>
-                                        <td>{{ \Illuminate\Support\Str::limit($stock->create_by->name, 20, '...') }}</td>
-                                        <td>{{ ucfirst($stock->status) }}</td>
-                                        <td>{{ ucfirst($stock->confirmation) }}</td>
-                                        <td>{{ isset($stock->description) ? \Illuminate\Support\Str::limit($stock->description, 30, '...') : '-' }}
-                                        </td>
-                                        <td width="13%">
-                                            <a href="{{ action('HomeController@show', $stock->id) }}"
-                                                class="btn btn-primary btn-circle btn-sm mb-1">
+                                            <a href="#" class="btn btn-info btn-circle btn-sm mb-1" data-toggle="modal"
+                                                data-target="#detailModal" data-id="{{ $booking->id }}"
+                                                data-book_id="{{ $booking->book_id }}"
+                                                data-user="{{ $booking->user->name }}"
+                                                data-desk="{{ $booking->desk }}" data-date="{{ $booking->date }}"
+                                                data-time="{{ $booking->time }}">
                                                 <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ action('HomeController@edit', $stock->id) }}"
-                                                class="btn btn-warning btn-circle btn-sm mb-1">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="#" class="btn btn-danger btn-circle btn-sm mb-1" data-toggle="modal"
-                                                data-target="#deleteModal" data-id="{{ $stock->id }}">
-                                                <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 @empty
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow mb-4">
+                <div class="card-header"><strong>Recent created Assessment</strong>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered display responsive nowrap" id="table" width="100%"
+                            cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th width="4%">#</th>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Duration</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($assessments as $assessment)
                                     <tr>
-                                        <td colspan="9" style="text-align: center">@lang('table.empty')</td>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $assessment->assess_id_1 }}<br>
+                                            {{ $assessment->assess_id_2 }}
+                                        </td>
+                                        <td>{{ $assessment->user->name }}</td>
+                                        <td>{{ $assessment->expires_at }}</td>
+                                        <td>
+                                            <a href="#" class="btn btn-info btn-circle btn-sm mb-1" data-toggle="modal"
+                                                data-target="#detailModal" data-id="{{ $assessment->id }}"><i
+                                                    class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
                                     </tr>
-                                @endforelse --}}
+                                @empty
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -157,12 +352,13 @@
     </div>
 
     <!-- Modal for zooming image -->
-    <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-                            class="sr-only">Close</span></button>
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     <img src="" class="imagepreview" style="width: 100%;">
                 </div>
             </div>
@@ -171,37 +367,7 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('datatables/sorting/natural.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            table = $('#table').DataTable({
-                columnDefs: [{
-                        orderable: false,
-                        targets: 0
-                    },
-                    {
-                        type: 'natural',
-                        targets: 1
-                    },
-                    {
-                        orderable: false,
-                        targets: 3
-                    },
-                ],
-                order: [
-                    [1, 'desc']
-                ],
-            });
-            table.on('order.dt search.dt', function() {
-                table.column(0, {
-                    search: 'applied',
-                    order: 'applied'
-                }).nodes().each(function(cell, i) {
-                    cell.innerHTML = i + 1;
-                });
-            }).draw();
-        })
-
         $('#deleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             var id = button.data('id'); // Extract info from data-* attributes

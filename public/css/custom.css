@@ -9,7 +9,7 @@
 }
 
 .navbar-fixed-top {
-    background-color: #4e73df;
+    background-color: #366bbd;
 }
 
 .nav-link-wrapper > a {
@@ -19,7 +19,7 @@
 }
 
 .nav-link-wrapper > a:hover {
-    color: #4e73df;
+    color: #366bbd;
     background-color: white;
     border-color: #fff;
     border-radius: 10rem;
@@ -30,7 +30,7 @@
 }
 
 .profile-wrapper {
-    background-color: #4e73df;
+    background-color: #366bbd;
 }
 
 .img-landing-page {
@@ -80,6 +80,6 @@
     border-radius: 0.35rem;
 }
 
-.container{
-	padding: 3 rem;
+.container {
+    padding: 3 rem;
 }

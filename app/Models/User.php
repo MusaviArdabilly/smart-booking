@@ -46,4 +46,9 @@ class User extends Authenticatable implements HasMedia
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function booking()
+    {
+        return $this->hasMany('App\Models\Booking');
+    }
 }

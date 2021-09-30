@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\HomeController;
+use App\Http\Controllers\WelcomeController;
+
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
 
 use App\Http\Controllers\Admin\FloorController;
@@ -23,20 +26,15 @@ use App\Http\Controllers\Admin\AssessmentController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// Route::get('/admin/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-
 $router->group(['prefix' => 'admin', 'middleware' => 'is_admin'], function () use ($router) {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('profile/{user}', [ProfileController::class, 'update'])->name('profile.update');
 
