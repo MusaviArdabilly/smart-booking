@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use App\Models\Booking;
 use Carbon\Carbon;
 
+use App\Mail\BookingCheckOutNotification;
+use Illuminate\Support\Facades\Mail;
+
 class AutoCheckout extends Command
 {
     /**
@@ -52,6 +55,25 @@ class AutoCheckout extends Command
             $booking->status = 'checked-out';
             $booking->time()->update(['checkout' => Carbon::now()]);
             $booking->save();
+
+            $email      = $booking->user->email;
+            $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+            $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+            $checkin    = $booking->time->checkin;
+            $checkout   = $booking->time->checkout;
+            $maildata = [
+                'title'     => 'You Check Out',
+                'id'        => $booking->book_id,
+                'desk'      => $desk,
+                'duration'  => $duration,
+                'checkin'   => $checkin,
+                'checkout'  => $checkout,
+            ];
+            try {
+                Mail::to($email)->send(new BookingCheckOutNotification($maildata));
+            } catch (\Throwable $th) {
+                $response_email = ', email';
+            }
         }
 
         $this->info('Successfully auto checkout');

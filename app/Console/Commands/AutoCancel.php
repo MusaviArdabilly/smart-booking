@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use App\Models\Booking;
 use Carbon\Carbon;
 
+use App\Mail\BookingCancelNotification;
+use Illuminate\Support\Facades\Mail;
+
 class AutoCancel extends Command
 {
     /**
@@ -46,7 +49,29 @@ class AutoCancel extends Command
             ->where('status', 'booked')
             ->whereHas('time', function ($query) use ($now) {
                 $query->whereTime('start', '<', $now);
-            })->update(['status' => 'canceled']);
+            })->get();
+
+        foreach ($booked as $booking) {
+            $booking->status = 'canceled';
+            $booking->save();
+
+            $email      = $booking->user->email;
+            $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+            $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+            $cancel     = $booking->updated_at;
+            $maildata = [
+                'title'     => 'Your Booking Canceled',
+                'id'        => $booking->book_id,
+                'desk'      => $desk,
+                'duration'  => $duration,
+                'cancel'    => $cancel,
+            ];
+            try {
+                Mail::to($email)->send(new BookingCancelNotification($maildata));
+            } catch (\Throwable $th) {
+                $response_email = ', email';
+            }
+        }
 
         $this->info('Successfully auto cancel');
     }

@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
+use App\Mail\BookingCreatedNotification;
+use App\Mail\BookingCheckInNotification;
+use App\Mail\BookingCheckOutNotification;
+use Illuminate\Support\Facades\Mail;
+
 class BookingController extends ApiController
 {
     /**
@@ -164,6 +169,26 @@ class BookingController extends ApiController
         // get time detail
         $booking->time;
 
+        // $response_email     = "";
+        // $response_telegram  = "";
+        // $response_whatsapp  = "";
+        $email      = $booking->user->email;
+        $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+        $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+        $maildata = [
+            'title'     => 'You booked a desk',
+            'id'        => $booking->book_id,
+            'desk'      => $desk,
+            'duration'  => $duration,
+        ];
+        try {
+            Mail::to($email)->send(new BookingCreatedNotification($maildata));
+        } catch (\Throwable $th) {
+            $response_email = ', email';
+            return $this->sendResponse('Booking created succesfully without email', $booking);
+        }
+        // return $this->sendResponse('Booking created succesfully without' . $response_email . $response_telegram . $response_whatsapp.' notification', $booking);
+
         return $this->sendResponse('Booking created succesfully', $booking);
     }
 
@@ -273,6 +298,23 @@ class BookingController extends ApiController
         // get time detail
         $booking->time;
 
+        $email      = $booking->user->email;
+        $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+        $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+        $checkin    = $booking->time->checkin;
+        $maildata = [
+            'title'     => 'You Check In',
+            'id'        => $booking->book_id,
+            'desk'      => $desk,
+            'duration'  => $duration,
+            'checkin'   => $checkin,
+        ];
+        try {
+            Mail::to($email)->send(new BookingCheckInNotification($maildata));
+        } catch (\Throwable $th) {
+            $response_email = ', email';
+        }
+
         return $this->sendResponse('You have been check-in', $booking);
     }
 
@@ -296,6 +338,25 @@ class BookingController extends ApiController
 
         // get time detail
         $booking->time;
+
+        $email      = $booking->user->email;
+        $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+        $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+        $checkin    = $booking->time->checkin;
+        $checkout   = $booking->time->checkout;
+        $maildata = [
+            'title'     => 'You Check Out',
+            'id'        => $booking->book_id,
+            'desk'      => $desk,
+            'duration'  => $duration,
+            'checkin'   => $checkin,
+            'checkout'  => $checkout,
+        ];
+        try {
+            Mail::to($email)->send(new BookingCheckOutNotification($maildata));
+        } catch (\Throwable $th) {
+            $response_email = ', email';
+        }
 
         return $this->sendResponse('You have been check-out', $booking);
     }

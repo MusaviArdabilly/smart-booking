@@ -7,6 +7,9 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+use App\Mail\BookingCheckOutNotification;
+use Illuminate\Support\Facades\Mail;
+
 class BookingController extends Controller
 {
     /**
@@ -16,7 +19,7 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::orderByRaw("FIELD(status , 'checked-in', 'booked', 'checked-out', 'cancelled') ASC")
+        $bookings = Booking::orderByRaw("FIELD(status , 'checked-in', 'booked', 'checked-out', 'canceled') ASC")
             ->orderBy('date', 'desc')->get();
         // return $bookings;
         foreach ($bookings as $booking) {
@@ -100,6 +103,25 @@ class BookingController extends Controller
         // update booking status
         $booking->status = 'checked-out';
         $booking->save();
+
+        $email      = $booking->user->email;
+        $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+        $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+        $checkin    = $booking->time->checkin;
+        $checkout   = $booking->time->checkout;
+        $maildata = [
+            'title'     => 'You Checked Out by Admin',
+            'id'        => $booking->book_id,
+            'desk'      => $desk,
+            'duration'  => $duration,
+            'checkin'   => $checkin,
+            'checkout'  => $checkout,
+        ];
+        try {
+            Mail::to($email)->send(new BookingCheckOutNotification($maildata));
+        } catch (\Throwable $th) {
+            $response_email = ', email';
+        }
 
         return response()->json(['message' => 'Status updated to Check Out successfully.']);
     }

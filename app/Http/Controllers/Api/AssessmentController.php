@@ -8,6 +8,9 @@ use App\Models\Assessment;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
+use App\Mail\AssessmentCreatedNotification;
+use Illuminate\Support\Facades\Mail;
+
 class AssessmentController extends ApiController
 {
     /**
@@ -68,6 +71,24 @@ class AssessmentController extends ApiController
 
         if ($request->hasFile('file')) {
             $assessment->addMediaFromRequest('file')->usingFileName($request->file('file')->hashName())->toMediaCollection('assessments');
+        }
+
+        $email      = $assessment->user->email;
+        $created_at = Carbon::parse($assessment->created_at)->format('Y-m-d H:i:s');
+        $expires_at = Carbon::parse($assessment->expires_at)->format('Y-m-d H:i:s');
+        $maildata = [
+            'title'         => 'You created a new Assessment',
+            'id'            => $assessment->assess_id,
+            'point'         => $assessment->point,
+            'created_at'    => $created_at,
+            'expires_at'    => $expires_at,
+        ];
+
+        try {
+            Mail::to($email)->send(new AssessmentCreatedNotification($maildata));
+        } catch (\Throwable $th) {
+            $response_email = ', email';
+            return $this->sendResponse('Assessment created succesfully without email', $th);
         }
 
         return $this->sendResponse('Assessment created succesfully', $assessment);
