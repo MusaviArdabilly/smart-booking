@@ -4,7 +4,7 @@
     <div class="container py-4 mt-5">
         <!-- Outer Row -->
         <div class="row justify-content-center">
-            <div class="col-6">
+            <div class="col-lg-6 col-md-8">
                 <div class="card o-hidden shadow-lg my-5" style="border-radius: 1.35rem">
                     <div class="card-body p-0">
                         <form method="POST" action="{{ route('login') }}">

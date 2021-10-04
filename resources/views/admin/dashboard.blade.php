@@ -2,21 +2,16 @@
 
 @section('style')
     <style>
-        .pop {
-            width: 30px;
-            height: 30px;
-            overflow: hidden;
-            position: relative;
+        .pdfobject-container {
+            height: 30rem;
+            border: 1rem solid rgba(0, 0, 0, .1);
         }
 
-        .pop img {
-            height: 100%;
-            min-width: 100%;
-            top: 0;
-            left: 0;
-            position: absolute;
-            vertical-align: top;
-            object-fit: contain;
+        @media (min-width: 768px) {
+            .modal-xl {
+                width: 90%;
+                max-width: 1200px;
+            }
         }
 
     </style>
@@ -265,7 +260,7 @@
                                         </td>
                                         <td>
                                             <a href="#" class="btn btn-info btn-circle btn-sm mb-1" data-toggle="modal"
-                                                data-target="#detailModal" data-id="{{ $booking->id }}"
+                                                data-target="#bookModal" data-id="{{ $booking->id }}"
                                                 data-book_id="{{ $booking->book_id }}"
                                                 data-user="{{ $booking->user->name }}"
                                                 data-desk="{{ $booking->desk }}" data-date="{{ $booking->date }}"
@@ -310,8 +305,9 @@
                                         <td>{{ $assessment->expires_at }}</td>
                                         <td>
                                             <a href="#" class="btn btn-info btn-circle btn-sm mb-1" data-toggle="modal"
-                                                data-target="#detailModal" data-id="{{ $assessment->id }}"><i
-                                                    class="fas fa-eye"></i>
+                                                data-target="#assessModal" data-id="{{ $assessment->id }}"
+                                                data-url={{ $assessment->getFirstMediaUrl('assessments', 'thumb') }}>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -325,65 +321,88 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="deleteModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+    <!-- Modal Booking-->
+    <div id="bookModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">@lang('stockout.title_delete')</h5>
+                    <h5 class="modal-title">Booking Detail</h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>@lang('stockout.subtitle_delete')</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary"
-                        data-dismiss="modal">@lang('general.no')</button>
-                    <form action="#" method="POST" id="deleteForm">
-                        @csrf
-                        {{ method_field('DELETE') }}
-                        <button type="submit" class="btn btn-danger"
-                            id="delete-btn"><strong>@lang('modal.yes_delete')</strong></button>
-                    </form>
+                    {{-- <div id="pdf-viewer"></div> --}}
+                    <table class="table table-bordereless display nowrap" id="tableDetail" width="100%" cellspacing="0">
+                        <tr>
+                            <td width="10%">ID</td>
+                            <td width="5%">:</td>
+                            <td id="id"></td>
+                        </tr>
+                        <tr>
+                            <td>User</td>
+                            <td>:</td>
+                            <td id="user"></td>
+                        </tr>
+                        <tr>
+                            <td>Floor/Sector/Desk</td>
+                            <td>:</td>
+                            <td id="desk"></td>
+                        </tr>
+                        <tr>
+                            <td>Date</td>
+                            <td>:</td>
+                            <td id="date"></td>
+                        </tr>
+                        <tr>
+                            <td>Time</td>
+                            <td>:</td>
+                            <td id="time"></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal for zooming image -->
-    <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- Modal Assessment -->
+    <div id="assessModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-xl">
+            <!-- Modal content-->
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assessment Pdf Preview</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
                 <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal"><span
-                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <img src="" class="imagepreview" style="width: 100%;">
+                    <div id="pdf-viewer"></div>
                 </div>
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('script')
+    <script src="{{ asset('js/pdfobject.js') }}"></script>
+
     <script>
-        $('#deleteModal').on('show.bs.modal', function(event) {
+        $('#bookModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             var id = button.data('id'); // Extract info from data-* attributes
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            $("#id").html(button.data('book_id'));
+            $("#user").html(button.data('user'));
+            $("#desk").html(button.data('desk'));
+            $("#date").html(button.data('date'));
+            $("#time").html(button.data('time'));
             var modal = $(this);
-            var form = document.getElementById("deleteForm");
-            var url = '{{-- action('HomeController@destroy', ':id') --}}';
-            url = url.replace(':id', id);
-            form.action = url;
         })
 
-        $(function() {
-            $(document).on("click", '.pop', function(event) {
-                $('.imagepreview').attr('src', $(this).find('img').attr('src'));
-                $('#imagemodal').modal('show');
-            });
-        });
+        $('#assessModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var id = button.data('id'); // Extract info from data-* attributes
+            var url = button.data('url') + '#toolbar=1';
+            var modal = $(this);
+            PDFObject.embed(url, "#pdf-viewer");
+        })
     </script>
 @endsection

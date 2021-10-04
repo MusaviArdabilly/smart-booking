@@ -95,7 +95,7 @@
                                         </td>
                                         <td>
                                             <a href="#" class="btn btn-info btn-circle btn-sm mb-1" data-toggle="modal"
-                                                data-target="#detailModal" data-id="{{ $booking->id }}"
+                                                data-target="#bookModal" data-id="{{ $booking->id }}"
                                                 data-book_id="{{ $booking->book_id }}"
                                                 data-user="{{ $booking->user->name }}"
                                                 data-desk="{{ $booking->desk }}" data-date="{{ $booking->date }}"
@@ -117,7 +117,7 @@
     </div>
 
     <!-- Modal -->
-    <div id="detailModal" class="modal fade" role="dialog">
+    <div id="bookModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
             <!-- Modal content-->
             <div class="modal-content">
@@ -229,7 +229,7 @@
             });
         });
 
-        $('#detailModal').on('show.bs.modal', function(event) {
+        $('#bookModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             var id = button.data('id'); // Extract info from data-* attributes
 

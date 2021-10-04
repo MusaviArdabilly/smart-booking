@@ -32,6 +32,13 @@
             border: 1rem solid rgba(0, 0, 0, .1);
         }
 
+        @media (min-width: 768px) {
+            .modal-xl {
+                width: 90%;
+                max-width: 1200px;
+            }
+        }
+
     </style>
 @endsection
 
@@ -83,7 +90,7 @@
                                         <td>{{ $assessment->expires_at }}</td>
                                         <td>
                                             <a href="#" class="btn btn-info btn-circle btn-sm mb-1" data-toggle="modal"
-                                                data-target="#previewModal" data-id="{{ $assessment->id }}"
+                                                data-target="#assessModal" data-id="{{ $assessment->id }}"
                                                 data-url={{ $assessment->getFirstMediaUrl('assessments', 'thumb') }}>
                                                 <i class="fas fa-eye"></i>
                                             </a>
@@ -102,8 +109,8 @@
     </div>
 
     <!-- Modal -->
-    <div id="previewModal" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-lg">
+    <div id="assessModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-xl">
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
@@ -157,7 +164,7 @@
             });
         });
 
-        $('#previewModal').on('show.bs.modal', function(event) {
+        $('#assessModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
             var id = button.data('id'); // Extract info from data-* attributes
             var url = button.data('url') + '#toolbar=1';
