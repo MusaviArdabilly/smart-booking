@@ -13,9 +13,8 @@
                             {{-- <div class="row"> --}}
                             {{-- <div class="col-lg-6 d-none d-lg-block">
                                     <img class="img-login-page" src="{{ asset('/img/6606.jpg') }}" alt="Halo">
-                                    <a class="img-login-page" href="http://www.freepik.com"
-                                        style="color: grey; font-size:12px">Designed by pch.vector / Freepik</a>
-                                </div> --}}
+                        <a class="img-login-page" href="http://www.freepik.com" style="color: grey; font-size:12px">Designed by pch.vector / Freepik</a>
+                </div> --}}
                             {{-- <div class="col"> --}}
                             <div class="p-5">
                                 <div class="text-center">
@@ -61,12 +60,22 @@
                                             style="border-radius: 10rem; padding: .75rem 1rem;">
                                             {{ __('Login') }}
                                         </button>
+                                        <hr>
+                                        <div class="text-center">
+                                            <a class="small" href="{{ route('password.request') }}">Forgot
+                                                Password?</a>
+                                        </div>
+                                        <div class="text-center">
+                                            <a class="small" href="{{ route('register') }}">Create an
+                                                Account!</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             {{-- </div> --}}
                             {{-- </div> --}}
                         </form>
+
                     </div>
                 </div>
             </div>
