@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProfileController;
+
 use App\Http\Controllers\Api\FloorController;
 use App\Http\Controllers\Api\SectorController;
 use App\Http\Controllers\Api\DeskController;
@@ -27,6 +29,9 @@ use App\Http\Controllers\Api\AssessmentController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+Route::get('profile/{user}', [ProfileController::class, 'show']);
+Route::patch('profile/{user}', [ProfileController::class, 'update']);
 
 // Route::group(['middleware' => 'auth:api'], function () {
 Route::get('floor/list', [FloorController::class, 'index']);

@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
-class ProfileController extends Controller
+class ProfileController extends ApiController
 {
     /**
-     * Display a listing of the resource.
+     * Display the specified resource.
      *
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function show(User $user)
     {
-        $user = User::where('username', '=', auth()->user()->username)->firstOrFail();
-        return view('admin.profile.index')->with(compact('user'));
+        return $this->sendResponse('Profile showed succesfully', $user);
     }
 
     /**
@@ -41,54 +42,70 @@ class ProfileController extends Controller
             // create new media
             $user->addMediaFromRequest('file')->usingFileName($request->file('file')->hashName())->toMediaCollection('avatars');
 
-            return redirect()->route('profile.index')
-                ->with('success', 'Avatar updated successfully');
+            return $this->sendResponse('Avatar updated succesfully', $user);
         }
 
         // password update
         if ($request->password) {
-            $validate = $request->validate([
+            // rules validator
+            $validator = Validator::make($request->all(), [
                 'old_password'  => ['required'],
                 'password'      => ['required', 'string', 'min:8', 'confirmed'],
             ]);
+            // response validate
+            if ($validator->fails()) {
+                return $this->sendInvalid('Validation errors', $validator->errors());
+            }
 
             if (Hash::check($request->old_password, $user->password)) {
                 $user->password = Hash::make($request->password);
                 $user->save();
 
-                return redirect()->route('profile.index')
-                    ->with('success', 'Password updated successfully');
+                return $this->sendResponse('Password updated succesfully', $user);
             }
 
-            return redirect()->route('profile.index')
-                ->with('error', 'Old Password does not match');
+            return $this->sendInvalid('Old Password does not match', '');
         }
 
         // rules validator
         if ($user->username != $request->username) {
-            $validate = $request->validate([
+            // rules validator
+            $validator = Validator::make($request->all(), [
                 'username'  => ['required', 'string', 'max:255', 'unique:users', 'alpha_dash'],
             ]);
+            // response validate
+            if ($validator->fails()) {
+                return $this->sendInvalid('Validation errors', $validator->errors());
+            }
         }
 
         if ($user->email != $request->email) {
-            $validate = $request->validate([
+            // rules validator
+            $validator = Validator::make($request->all(), [
                 'email'     => ['required', 'string', 'email', 'max:255', 'unique:users'],
             ]);
+            // response validate
+            if ($validator->fails()) {
+                return $this->sendInvalid('Validation errors', $validator->errors());
+            }
         }
 
         if ($request->name) {
-            $validate = $request->validate([
+            // rules validator
+            $validator = Validator::make($request->all(), [
                 'name'      => ['required', 'string', 'max:255'],
                 'username'  => ['required', 'string', 'max:255', 'alpha_dash'],
                 'email'     => ['required', 'string', 'email', 'max:255'],
                 'phone'     => ['numeric', 'digits_between:11,13', 'nullable'],
             ]);
+            // response validate
+            if ($validator->fails()) {
+                return $this->sendInvalid('Validation errors', $validator->errors());
+            }
         }
 
         $user->update($request->all());
 
-        return redirect()->route('profile.index')
-            ->with('success', 'Profile updated successfully');
+        return $this->sendResponse('Profile updated succesfully', $user);
     }
 }
