@@ -90,9 +90,10 @@ class BookingController extends ApiController
 
         // booked/used desk on start_time
         $desk_start = Booking::where('desk_id', $request->desk_id)->whereDate('date', $request->date)
+            ->whereIn('status', ['booked', 'checked-in'])
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('start', '>=', $start)
-                    ->WhereTime('start', '<=', $end);
+                    ->whereTime('start', '<=', $end);
             })
             ->with('time')->first();
         if ($desk_start) {
@@ -106,9 +107,10 @@ class BookingController extends ApiController
 
         // booked/used desk on end_time
         $desk_end = Booking::where('desk_id', $request->desk_id)->whereDate('date', $request->date)
+            ->whereIn('status', ['booked', 'checked-in'])
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('end', '>=', $start)
-                    ->WhereTime('end', '<=', $end);
+                    ->whereTime('end', '<=', $end);
             })
             ->with('time')->first();
         if ($desk_end) {
@@ -120,8 +122,27 @@ class BookingController extends ApiController
             }
         }
 
+        // booked/used desk between start and end_time
+        $desk_between = Booking::where('desk_id', $request->desk_id)->whereDate('date', $request->date)
+            ->whereIn('status', ['booked', 'checked-in'])
+            ->whereHas('time', function ($query) use ($start, $end) {
+                $query->whereTime('start', '<=', $start)
+                    ->whereTime('end', '>=', $end);
+            })
+            ->with('time')->first();
+        if ($desk_between) {
+            $start_time = Carbon::parse($desk_between->time->start);
+            $end_time = Carbon::parse($desk_between->time->end);
+            if ($start == $end_time || $end == $start_time) {
+                // do nothing if it's ended before already booked
+            } else {
+                return $this->sendInvalid('Desk already booked between start and end time', $desk_between);
+            }
+        }
+
         // user already booked/used a desk on start_time
         $user_start = Booking::where('user_id', $request->user_id)->whereDate('date', $request->date)
+            ->whereIn('status', ['booked', 'checked-in'])
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('start', '>=', $start)
                     ->WhereTime('start', '<=', $end);
@@ -138,6 +159,7 @@ class BookingController extends ApiController
 
         // user already booked/used a desk on end_time
         $user_end = Booking::where('user_id', $request->user_id)->whereDate('date', $request->date)
+            ->whereIn('status', ['booked', 'checked-in'])
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('end', '>=', $start)
                     ->WhereTime('end', '<=', $end);
@@ -149,6 +171,24 @@ class BookingController extends ApiController
                 // do nothing if it's started after already already
             } else {
                 return $this->sendInvalid('You already booked a desk at end time', $user_end);
+            }
+        }
+
+        // user already booked/used a desk between start and end_time
+        $user_between = Booking::where('user_id', $request->user_id)->whereDate('date', $request->date)
+            ->whereIn('status', ['booked', 'checked-in'])
+            ->whereHas('time', function ($query) use ($start, $end) {
+                $query->whereTime('start', '<=', $start)
+                    ->whereTime('end', '>=', $end);
+            })
+            ->with('time')->first();
+        if ($user_between) {
+            $start_time = Carbon::parse($user_between->time->start);
+            $end_time = Carbon::parse($user_between->time->end);
+            if ($start == $end_time || $end == $start_time) {
+                // do nothing if it's started after already already
+            } else {
+                return $this->sendInvalid('You already booked between start and end time', $user_between);
             }
         }
 
@@ -225,29 +265,6 @@ class BookingController extends ApiController
         $booking->time;
 
         return $this->sendResponse('', $booking);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Booking  $booking
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Booking $booking)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Booking  $booking
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Booking $booking)
-    {
-        //
     }
 
     /**
