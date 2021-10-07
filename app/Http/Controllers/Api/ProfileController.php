@@ -18,6 +18,13 @@ class ProfileController extends ApiController
      */
     public function show(User $user)
     {
+        $media = $user->getMedia();
+        try {
+            $user->media_url = $user->media[0]->getUrl();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        unset($user->media);
         return $this->sendResponse('Profile showed succesfully', $user);
     }
 
