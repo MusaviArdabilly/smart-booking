@@ -50,7 +50,10 @@ class DeskController extends ApiController
                 $start_booking  = Carbon::parse($booking->time->start);
                 $end_booking    = Carbon::parse($booking->time->end);
 
-                if (($start_booking >= $start && $start_booking < $end) || ($end_booking >= $start && $end_booking < $end)) {
+                if (($start_booking >= $start && $start_booking < $end) ||
+                    ($end_booking > $start && $end_booking <= $end) ||
+                    ($start_booking <= $start && $end_booking >= $end)
+                ) {
                     $booked[$i++] = $booking;
                     // $booking->start_time = $booking->time->start;
                     // $booking->end_time = $booking->time->end;

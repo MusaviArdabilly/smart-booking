@@ -93,7 +93,7 @@ class BookingController extends ApiController
             ->whereIn('status', ['booked', 'checked-in'])
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('start', '>=', $start)
-                    ->whereTime('start', '<=', $end);
+                    ->whereTime('start', '<', $end);
             })
             ->with('time')->first();
         if ($desk_start) {
@@ -109,7 +109,7 @@ class BookingController extends ApiController
         $desk_end = Booking::where('desk_id', $request->desk_id)->whereDate('date', $request->date)
             ->whereIn('status', ['booked', 'checked-in'])
             ->whereHas('time', function ($query) use ($start, $end) {
-                $query->whereTime('end', '>=', $start)
+                $query->whereTime('end', '>', $start)
                     ->whereTime('end', '<=', $end);
             })
             ->with('time')->first();
@@ -145,7 +145,7 @@ class BookingController extends ApiController
             ->whereIn('status', ['booked', 'checked-in'])
             ->whereHas('time', function ($query) use ($start, $end) {
                 $query->whereTime('start', '>=', $start)
-                    ->WhereTime('start', '<=', $end);
+                    ->WhereTime('start', '<', $end);
             })
             ->with('time')->first();
         if ($user_start) {
@@ -161,7 +161,7 @@ class BookingController extends ApiController
         $user_end = Booking::where('user_id', $request->user_id)->whereDate('date', $request->date)
             ->whereIn('status', ['booked', 'checked-in'])
             ->whereHas('time', function ($query) use ($start, $end) {
-                $query->whereTime('end', '>=', $start)
+                $query->whereTime('end', '>', $start)
                     ->WhereTime('end', '<=', $end);
             })
             ->with('time')->first();
