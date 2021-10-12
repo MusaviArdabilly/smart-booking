@@ -23,6 +23,11 @@ class Assessment extends Model implements HasMedia
         'expires_at',
     ];
 
+    public function log()
+    {
+        return $this->hasMany('App\Models\AssessmentLog');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');

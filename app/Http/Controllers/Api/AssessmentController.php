@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Assessment;
+use App\Models\AssessmentLog;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
@@ -111,5 +112,26 @@ class AssessmentController extends ApiController
         unset($assessment->media);
 
         return $this->sendResponse('', $assessment);
+    }
+
+    /**
+     * Verif the specified resource.
+     *
+     * @param  \App\Models\Assessment  $assessment
+     * @return \Illuminate\Http\Response
+     */
+    public function verif(Assessment $assessment)
+    {
+        // validate if expired
+        if (Carbon::today()->endOfDay() > $assessment->expires_at) {
+            return $this->sendInvalid('Assessment already Expired');
+        }
+
+        // create new assessment log
+        $assessment = AssessmentLog::create([
+            'assessment_id'     => $assessment->id,
+        ]);
+
+        return $this->sendResponse('Verification complete', $assessment);
     }
 }
