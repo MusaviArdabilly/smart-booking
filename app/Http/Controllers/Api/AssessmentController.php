@@ -47,6 +47,7 @@ class AssessmentController extends ApiController
     {
         // rules validator
         $validator = Validator::make($request->all(), [
+            'assess_id'     => ['required'],
             'user_id'       => ['required'],
             'point'         => ['required', 'numeric'],
             'file'          => ['required', 'mimes:pdf'],
@@ -64,7 +65,8 @@ class AssessmentController extends ApiController
 
         // create new assessment
         $assessment = Assessment::create([
-            'assess_id'     => 'AS' . Carbon::now()->format('YmdHis'),
+            // 'assess_id'     => 'AS' . Carbon::now()->format('YmdHis'),
+            'assess_id'     => $request->assess_id,
             'user_id'       => $request->user_id,
             'point'         => $request->point,
             'expires_at'    => Carbon::today()->endOfDay(),
