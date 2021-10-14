@@ -122,8 +122,9 @@ class AssessmentController extends ApiController
      * @param  \App\Models\Assessment  $assessment
      * @return \Illuminate\Http\Response
      */
-    public function verif(Assessment $assessment)
+    public function verify($assess_id)
     {
+        $assessment = Assessment::where('assess_id', $assess_id)->first();
         // validate if expired
         if (Carbon::today()->endOfDay() > $assessment->expires_at) {
             return $this->sendInvalid('Assessment already Expired');
