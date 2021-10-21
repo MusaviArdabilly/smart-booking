@@ -38,6 +38,27 @@ class AssessmentController extends ApiController
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function last($user_id)
+    {
+        $assessment = Assessment::where('user_id', $user_id)->orderBy('created_at', 'desc')->first();
+
+        // add some property
+        $media = $assessment->getMedia();
+        try {
+            $assessment->media_url = $assessment->media[0]->getUrl();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        unset($assessment->media);
+
+        return $this->sendResponse('Last Assessments listed succesfully', $assessment);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -113,7 +134,7 @@ class AssessmentController extends ApiController
         }
         unset($assessment->media);
 
-        return $this->sendResponse('', $assessment);
+        return $this->sendResponse('Assessments showed succesfully', $assessment);
     }
 
     /**

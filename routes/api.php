@@ -49,4 +49,5 @@ Route::patch('booking/{booking}/checkout', [BookingController::class, 'checkout'
 Route::post('assessment', [AssessmentController::class, 'store']);
 Route::get('assessment/{assessment}', [AssessmentController::class, 'show']);
 Route::get('assessment/{user}/list', [AssessmentController::class, 'index']);
+Route::get('assessment/{user}/last', [AssessmentController::class, 'last']);
 Route::patch('assessment/{assessment}/verify', [AssessmentController::class, 'verify']);
