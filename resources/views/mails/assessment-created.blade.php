@@ -7,6 +7,7 @@
     .table td {
         padding: 3px;
     }
+
 </style>
 
 # {{ $maildata['title'] }}
@@ -27,7 +28,7 @@ Your Assessment details:
         <td>{{ $maildata['point'] }}</td>
     </tr>
     <tr>
-        <td>created at</td>
+        <td>Created at</td>
         <td>:</td>
         <td>{{ $maildata['created_at'] }}</td>
     </tr>
@@ -35,6 +36,11 @@ Your Assessment details:
         <td>Expires at</td>
         <td>:</td>
         <td>{{ $maildata['expires_at'] }}</td>
+    </tr>
+    <tr>
+        <td>File</td>
+        <td>:</td>
+        <td>You can Access in app / click <a href="{{ $maildata['media_url'] }}">here</a></td>
     </tr>
 </table>
 

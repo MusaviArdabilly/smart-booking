@@ -44,7 +44,7 @@ class AssessmentController extends ApiController
      */
     public function last($user_id)
     {
-        $assessment = Assessment::where('user_id', $user_id)->orderBy('created_at', 'desc')->first();
+        $assessment = Assessment::where('user_id', $user_id)->orderBy('created_at', 'desc')->firstOrFail();
 
         // add some property
         $media = $assessment->getMedia();
@@ -95,6 +95,13 @@ class AssessmentController extends ApiController
 
         if ($request->hasFile('file')) {
             $assessment->addMediaFromRequest('file')->usingFileName($request->file('file')->hashName())->toMediaCollection('assessments');
+            $media_url = $assessment->getMedia();
+            try {
+                $media_url = $assessment->media[0]->getUrl();
+            } catch (\Throwable $th) {
+                $media_url = "";
+            }
+            unset($assessment->media);
         }
 
         $email      = $assessment->user->email;
@@ -106,6 +113,7 @@ class AssessmentController extends ApiController
             'point'         => $assessment->point,
             'created_at'    => $created_at,
             'expires_at'    => $expires_at,
+            'media_url'     => $media_url,
         ];
 
         try {
