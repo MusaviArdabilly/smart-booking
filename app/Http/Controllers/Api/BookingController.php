@@ -327,7 +327,7 @@ class BookingController extends ApiController
             'checkin'   => $checkin,
         ];
         try {
-            Mail::to($email)->send(new BookingCheckInNotification($maildata));
+            // Mail::to($email)->send(new BookingCheckInNotification($maildata));
         } catch (\Throwable $th) {
             $response_email = ', email';
         }
@@ -370,7 +370,7 @@ class BookingController extends ApiController
             'checkout'  => $checkout,
         ];
         try {
-            Mail::to($email)->send(new BookingCheckOutNotification($maildata));
+            // Mail::to($email)->send(new BookingCheckOutNotification($maildata));
         } catch (\Throwable $th) {
             $response_email = ', email';
         }
