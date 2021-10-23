@@ -35,6 +35,8 @@ class Sector extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb');
+        $this->addMediaConversion('thumb')
+            ->width(1000)
+            ->height(1000);
     }
 }
