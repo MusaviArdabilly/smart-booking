@@ -22,7 +22,11 @@ class SectorController extends ApiController
             $url = [];
             try {
                 foreach ($sector->media as $item) {
-                    $url[] = $item->getUrl();
+                    if ($item->hasGeneratedConversion('thumb')) {
+                        $url[] = $item->getUrl('thumb');
+                    } else {
+                        $url[] = $item->getUrl();
+                    }
                 }
                 if (!empty($url)) {
                     $sector->media_url = $url;

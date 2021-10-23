@@ -21,7 +21,11 @@ class FloorController extends ApiController
         foreach ($floors as $floor) {
             $media = $floor->getMedia();
             try {
-                $floor->media_url = $floor->media[0]->getUrl();
+                if ($floor->media[0]->hasGeneratedConversion('thumb')) {
+                    $floor->media_url = $floor->media[0]->getUrl('thumb');
+                } else {
+                    $floor->media_url = $floor->media[0]->getUrl();
+                }
             } catch (\Throwable $th) {
                 //throw $th;
             }

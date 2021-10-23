@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Sector extends Model implements HasMedia
 {
@@ -30,5 +31,10 @@ class Sector extends Model implements HasMedia
     public function desks()
     {
         return $this->hasMany('App\Models\Desk');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb');
     }
 }

@@ -16,9 +16,6 @@ class SectorController extends Controller
      */
     public function index($floor_id)
     {
-        // $sectors = Sector::where('floor_id', $floor_id)->get();
-        // return view('admin.sector.index', compact('sectors', 'floor_id'));
-        // return compact('floor_id');
         $floor = Floor::find($floor_id);
         $media = $floor->getMedia();
         return view('admin.sector.index', compact('floor'));
@@ -56,7 +53,6 @@ class SectorController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
         // rules validator
         $validate = $request->validate([
             'floor_id'      => ['required'],

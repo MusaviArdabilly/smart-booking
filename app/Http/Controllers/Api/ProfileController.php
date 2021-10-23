@@ -20,7 +20,11 @@ class ProfileController extends ApiController
     {
         $media = $user->getMedia();
         try {
-            $user->media_url = $user->media[0]->getUrl();
+            if ($user->media[0]->hasGeneratedConversion('thumb')) {
+                $user->media_url = $user->media[0]->getUrl('thumb');
+            } else {
+                $user->media_url = $user->media[0]->getUrl();
+            }
         } catch (\Throwable $th) {
             //throw $th;
         }

@@ -107,8 +107,13 @@
                                                 @php
                                                     $i++;
                                                 @endphp
-                                                <img class="d-block" src="{{ $item->getUrl() }}" alt=""
-                                                    style="height:300px; max-height: 300px; margin:auto">
+                                                @if ($item->hasGeneratedConversion('thumb'))
+                                                    <img class="d-block" src="{{ $item->getUrl('thumb') }}" alt=""
+                                                        style="height:300px; max-height: 300px; margin:auto">
+                                                @else
+                                                    <img class="d-block" src="{{ $item->getUrl() }}" alt=""
+                                                        style="height:300px; max-height: 300px; margin:auto">
+                                                @endif
                                             </div>
                                         @endforeach
                                         <a class="carousel-control-prev" href="#carouselControls" role="button"
