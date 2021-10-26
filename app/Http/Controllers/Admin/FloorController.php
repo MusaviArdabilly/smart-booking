@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Floor;
 use Illuminate\Http\Request;
 
-use function PHPUnit\Framework\isEmpty;
-
 class FloorController extends Controller
 {
     /**

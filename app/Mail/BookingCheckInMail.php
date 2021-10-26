@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class AssessmentCreatedNotification extends Mailable
+class BookingCheckInMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $maildata;
@@ -29,7 +29,7 @@ class AssessmentCreatedNotification extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mails.assessment-created')
+        return $this->markdown('mails.booking-checkin')
             ->with('maildata', $this->maildata);
     }
 }

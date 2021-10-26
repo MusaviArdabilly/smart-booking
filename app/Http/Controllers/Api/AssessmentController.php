@@ -9,7 +9,7 @@ use App\Models\AssessmentLog;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-use App\Mail\AssessmentCreatedNotification;
+use App\Mail\AssessmentCreatedMail;
 use Illuminate\Support\Facades\Mail;
 
 class AssessmentController extends ApiController
@@ -117,7 +117,7 @@ class AssessmentController extends ApiController
         ];
 
         try {
-            Mail::to($email)->send(new AssessmentCreatedNotification($maildata));
+            Mail::to($email)->send(new AssessmentCreatedMail($maildata));
         } catch (\Throwable $th) {
             $response_email = ', email';
             return $this->sendResponse('Assessment created succesfully without email', $th);

@@ -7,7 +7,7 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-use App\Mail\BookingCheckOutNotification;
+use App\Mail\BookingCheckOutMail;
 use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
@@ -118,7 +118,7 @@ class BookingController extends Controller
             'checkout'  => $checkout,
         ];
         try {
-            Mail::to($email)->send(new BookingCheckOutNotification($maildata));
+            Mail::to($email)->send(new BookingCheckOutMail($maildata));
         } catch (\Throwable $th) {
             $response_email = ', email';
         }

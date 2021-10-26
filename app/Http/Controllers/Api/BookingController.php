@@ -9,9 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-use App\Mail\BookingCreatedNotification;
-use App\Mail\BookingCheckInNotification;
-use App\Mail\BookingCheckOutNotification;
+use App\Mail\BookingCreatedMail;
+use App\Mail\BookingCheckInMail;
+use App\Mail\BookingCheckOutMail;
 use Illuminate\Support\Facades\Mail;
 
 class BookingController extends ApiController
@@ -222,12 +222,12 @@ class BookingController extends ApiController
             'duration'  => $duration,
         ];
         try {
-            Mail::to($email)->send(new BookingCreatedNotification($maildata));
+            Mail::to($email)->send(new BookingCreatedMail($maildata));
         } catch (\Throwable $th) {
             $response_email = ', email';
             return $this->sendResponse('Booking created succesfully without email', $booking);
         }
-        // return $this->sendResponse('Booking created succesfully without' . $response_email . $response_telegram . $response_whatsapp.' notification', $booking);
+        // return $this->sendResponse('Booking created succesfully without' . $response_email . $response_telegram . $response_whatsapp.' Mail', $booking);
 
         return $this->sendResponse('Booking created succesfully', $booking);
     }
@@ -327,7 +327,7 @@ class BookingController extends ApiController
             'checkin'   => $checkin,
         ];
         try {
-            // Mail::to($email)->send(new BookingCheckInNotification($maildata));
+            // Mail::to($email)->send(new BookingCheckInMail($maildata));
         } catch (\Throwable $th) {
             $response_email = ', email';
         }
@@ -370,7 +370,7 @@ class BookingController extends ApiController
             'checkout'  => $checkout,
         ];
         try {
-            // Mail::to($email)->send(new BookingCheckOutNotification($maildata));
+            // Mail::to($email)->send(new BookingCheckOutMail($maildata));
         } catch (\Throwable $th) {
             $response_email = ', email';
         }
