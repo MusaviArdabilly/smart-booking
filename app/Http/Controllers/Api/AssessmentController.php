@@ -9,8 +9,8 @@ use App\Models\AssessmentLog;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-use App\Mail\AssessmentCreatedMail;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendQueueMailJob;
+
 
 class AssessmentController extends ApiController
 {
@@ -114,10 +114,14 @@ class AssessmentController extends ApiController
             'created_at'    => $created_at,
             'expires_at'    => $expires_at,
             'media_url'     => $media_url,
+            'email'         => $email,
+            'markdown'      => 'mails.assessment-created',
         ];
 
         try {
-            Mail::to($email)->send(new AssessmentCreatedMail($maildata));
+            // Mail::to($email)->send(new AssessmentCreatedMail($maildata));
+            $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+            dispatch($job);
         } catch (\Throwable $th) {
             $response_email = ', email';
             return $this->sendResponse('Assessment created succesfully without email', $th);

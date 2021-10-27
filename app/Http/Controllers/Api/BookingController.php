@@ -9,10 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-use App\Mail\BookingCreatedMail;
-use App\Mail\BookingCheckInMail;
-use App\Mail\BookingCheckOutMail;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendQueueMailJob;
 
 class BookingController extends ApiController
 {
@@ -220,9 +217,13 @@ class BookingController extends ApiController
             'id'        => $booking->book_id,
             'desk'      => $desk,
             'duration'  => $duration,
+            'email'     => $email,
+            'markdown'  => 'mails.booking-created',
         ];
         try {
-            Mail::to($email)->send(new BookingCreatedMail($maildata));
+            // Mail::to($email)->send(new BookingCreatedMail($maildata));
+            $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+            dispatch($job);
         } catch (\Throwable $th) {
             $response_email = ', email';
             return $this->sendResponse('Booking created succesfully without email', $booking);
@@ -325,9 +326,13 @@ class BookingController extends ApiController
             'desk'      => $desk,
             'duration'  => $duration,
             'checkin'   => $checkin,
+            'email'     => $email,
+            'markdown'  => 'mails.booking-created',
         ];
         try {
             // Mail::to($email)->send(new BookingCheckInMail($maildata));
+            // $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+            // dispatch($job);
         } catch (\Throwable $th) {
             $response_email = ', email';
         }
@@ -368,9 +373,13 @@ class BookingController extends ApiController
             'duration'  => $duration,
             'checkin'   => $checkin,
             'checkout'  => $checkout,
+            'email'     => $email,
+            'markdown'  => 'mails.booking-created',
         ];
         try {
             // Mail::to($email)->send(new BookingCheckOutMail($maildata));
+            // $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+            // dispatch($job);
         } catch (\Throwable $th) {
             $response_email = ', email';
         }
