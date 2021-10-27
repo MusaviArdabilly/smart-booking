@@ -7,6 +7,7 @@ use App\Models\Floor;
 use App\Models\Sector;
 use App\Models\Desk;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use stdClass;
 
 class WelcomeController extends Controller
@@ -31,5 +32,20 @@ class WelcomeController extends Controller
         $most->users  = $most_users;
 
         return view('welcome', compact('count', 'most'));
+    }
+
+    public function synapsis()
+    {
+        $most_bookings = User::withCount('bookingMonth')->orderBy('booking_month_count', 'desc')->withCount('booking')->get();
+        $most_assessments = User::withCount('assessmentMonth')->orderBy('assessment_month_count', 'desc')->withCount('assessment')->get();
+        $most_logs = User::withCount('assessmentLogMonth')->orderBy('assessment_log_month_count', 'desc')->withCount('assessmentLog')->get();
+        // return $most_logs;
+
+        $most = new stdClass();
+        $most->bookings     = $most_bookings;
+        $most->assessments  = $most_assessments;
+        $most->logs         = $most_logs;
+
+        return view('synapsis', compact('most'));
     }
 }

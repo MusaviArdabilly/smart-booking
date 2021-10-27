@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Laravel\Passport\HasApiTokens;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
@@ -51,6 +53,32 @@ class User extends Authenticatable implements HasMedia
     public function booking()
     {
         return $this->hasMany('App\Models\Booking');
+    }
+
+    public function bookingMonth()
+    {
+        return $this->hasMany('App\Models\Booking')->whereMonth('created_at', Carbon::now()->month);
+    }
+
+    public function assessment()
+    {
+        return $this->hasMany('App\Models\Assessment');
+    }
+
+    public function assessmentMonth()
+    {
+        return $this->hasMany('App\Models\Assessment')->whereMonth('created_at', Carbon::now()->month);
+    }
+
+    public function assessmentLog()
+    {
+        return $this->hasManyThrough('App\Models\AssessmentLog', 'App\Models\Assessment', null, 'assessment_id');
+    }
+
+    public function assessmentLogMonth()
+    {
+        return $this->hasManyThrough('App\Models\AssessmentLog', 'App\Models\Assessment', null, 'assessment_id')
+            ->whereMonth('assessment_logs.created_at', Carbon::now()->month);
     }
 
     public function registerMediaConversions(?Media $media = null): void

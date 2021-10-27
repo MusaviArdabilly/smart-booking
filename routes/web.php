@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\Admin\AssessmentController;
 */
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+Route::get('/synapsis', [WelcomeController::class, 'synapsis']);
 
 Auth::routes();
 
