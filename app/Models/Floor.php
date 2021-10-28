@@ -26,11 +26,4 @@ class Floor extends Model implements HasMedia
     {
         return $this->hasMany('App\Models\Sector');
     }
-
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')
-            ->width(1000)
-            ->height(1000);
-    }
 }
