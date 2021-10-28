@@ -66,7 +66,7 @@ class WelcomeController extends Controller
             $user_bookings = User::withCount([
                 'booking',
                 'booking as booking_count' => function ($query) use ($date) {
-                    $query->whereDate('created_at', $date);
+                    $query->whereDate('date', $date);
                 }
             ])->get();
             $total_booking = 0;

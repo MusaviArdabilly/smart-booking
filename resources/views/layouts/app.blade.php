@@ -53,7 +53,7 @@
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('js/jquery.easing.min.js') }}"></script>
     <!-- Chart JS -->
-    <script src="{{ asset('js/Chart.min.js') }}"></script>
+    <script src="{{ asset('js/chart.min.js') }}"></script>
     {{-- Datatable --}}
     <script src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/dataTables.bootstrap4.min.js') }}"></script>
