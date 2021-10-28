@@ -38,6 +38,12 @@
     <div class="container mt-4">
         <div class="container-fluid">
 
+            <div class="row mb-4">
+                <div class="col">
+                    <canvas id="chart-usageperday" height="40px !important" width="100% !important">
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col">
                     <div class="card shadow mb-4">
@@ -143,4 +149,77 @@
 
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script type="text/javascript">
+        // today = new Date();
+        // document.getElementById('date').valueAsDate = today;
+        // date = today.toISOString().split('T')[0];
+
+        //chart per month
+        var ctx_day = document.getElementById("chart-usageperday");
+        var chartUsageperday = new Chart(ctx_day, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Booking per Day',
+                    data: [],
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)'
+                }, {
+                    label: 'Assessment per Day',
+                    data: [],
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)'
+                }, ],
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Usage'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Day'
+                        }
+                    }],
+                }
+            }
+        });
+
+        var updatePerDay = function() {
+            $.ajax({
+                url: "{{ url('/synapsisperday') }}",
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    console.log(data);
+                    chartUsageperday.data.labels = data.days;
+                    // usage = data.usage.map(a => a.toFixed(4));
+                    chartUsageperday.data.datasets[0].data = data.bookings;
+                    chartUsageperday.data.datasets[1].data = data.assessments;
+                    chartUsageperday.update();
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        updatePerDay();
+    </script>
 @endsection

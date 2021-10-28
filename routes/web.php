@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\AssessmentController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/synapsis', [WelcomeController::class, 'synapsis']);
+Route::get('/synapsisperday', [WelcomeController::class, 'perday']);
 
 Auth::routes();
 
