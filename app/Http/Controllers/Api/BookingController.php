@@ -20,7 +20,7 @@ class BookingController extends ApiController
      */
     public function index($user_id)
     {
-        $bookings = Booking::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
+        $bookings = Booking::where('user_id', $user_id)->orderBy('created_at', 'desc')->paginate(10);
 
         // add some property
         foreach ($bookings as $booking) {
