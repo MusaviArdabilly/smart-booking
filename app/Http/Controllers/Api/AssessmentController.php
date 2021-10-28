@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
 use App\Jobs\SendQueueMailJob;
-// use App\Notifications\FirebaseNotification;
+use App\Notifications\SendNotification;
 
 
 class AssessmentController extends ApiController
@@ -128,22 +128,22 @@ class AssessmentController extends ApiController
             return $this->sendResponse('Assessment created succesfully without email', $th);
         }
 
-        // $notifdata = [
-        //     'topic' => $assessment->user->id,
-        //     'notification' => [
-        //         "title" => "You created a new Assessment",
-        //         "body"  => "with ID" . $assessment->assess_id
-        //     ],
-        //     'data' => [
-        //         "DIRECT_ID" => 3
-        //     ]
-        // ];
+        $notifdata = [
+            'topic' => $assessment->user->id,
+            'notification' => [
+                "title" => "You created a new Assessment",
+                "body"  => "with ID " . $assessment->assess_id
+            ],
+            'data' => [
+                "DIRECT_ID" => 3
+            ]
+        ];
 
-        // try {
-        //     // new FirebaseNotification($notifdata);
-        // } catch (\Throwable $th) {
-        //     return $this->sendResponse('Assessment created succesfully without notification', $th);
-        // }
+        try {
+            new SendNotification($notifdata);
+        } catch (\Throwable $th) {
+            return $this->sendResponse('Assessment created succesfully without notification', $th);
+        }
 
         return $this->sendResponse('Assessment created succesfully', $assessment);
     }

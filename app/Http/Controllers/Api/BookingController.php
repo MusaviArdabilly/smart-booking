@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
 use App\Jobs\SendQueueMailJob;
+use App\Notifications\SendNotification;
 
 class BookingController extends ApiController
 {
@@ -230,6 +231,23 @@ class BookingController extends ApiController
         }
         // return $this->sendResponse('Booking created succesfully without' . $response_email . $response_telegram . $response_whatsapp.' Mail', $booking);
 
+        $notifdata = [
+            'topic' => $booking->user->id,
+            'notification' => [
+                "title" => "You created a new Booking",
+                "body"  => "with ID " . $booking->book_id
+            ],
+            'data' => [
+                "DIRECT_ID" => 2
+            ]
+        ];
+
+        try {
+            new SendNotification($notifdata);
+        } catch (\Throwable $th) {
+            return $this->sendResponse('Booking created succesfully without notification', $th);
+        }
+
         return $this->sendResponse('Booking created succesfully', $booking);
     }
 
@@ -337,6 +355,23 @@ class BookingController extends ApiController
             $response_email = ', email';
         }
 
+        $notifdata = [
+            'topic' => $booking->user->id,
+            'notification' => [
+                "title" => "You Check In at " . $checkin,
+                "body"  => "with ID " . $booking->book_id
+            ],
+            'data' => [
+                "DIRECT_ID" => 2
+            ]
+        ];
+
+        try {
+            new SendNotification($notifdata);
+        } catch (\Throwable $th) {
+            return $this->sendResponse('Booking check in succesfully without notification', $th);
+        }
+
         return $this->sendResponse('You have been check-in', $booking);
     }
 
@@ -382,6 +417,23 @@ class BookingController extends ApiController
             // dispatch($job);
         } catch (\Throwable $th) {
             $response_email = ', email';
+        }
+
+        $notifdata = [
+            'topic' => $booking->user->id,
+            'notification' => [
+                "title" => "You Check Out at " . $checkout,
+                "body"  => "with ID " . $booking->book_id
+            ],
+            'data' => [
+                "DIRECT_ID" => 2
+            ]
+        ];
+
+        try {
+            new SendNotification($notifdata);
+        } catch (\Throwable $th) {
+            return $this->sendResponse('Booking check in succesfully without notification', $th);
         }
 
         return $this->sendResponse('You have been check-out', $booking);
