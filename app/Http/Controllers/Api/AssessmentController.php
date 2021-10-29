@@ -135,7 +135,8 @@ class AssessmentController extends ApiController
                 "body"  => "with ID " . $assessment->assess_id
             ],
             'data' => [
-                "DIRECT_ID" => 3
+                "DIRECT_ID" => 3,
+                "EXTRA_ID" => $assessment->id
             ]
         ];
 

@@ -238,7 +238,8 @@ class BookingController extends ApiController
                 "body"  => "with ID " . $booking->book_id
             ],
             'data' => [
-                "DIRECT_ID" => 2
+                "DIRECT_ID" => 2,
+                "EXTRA_ID" => $booking->id
             ]
         ];
 
@@ -362,7 +363,8 @@ class BookingController extends ApiController
                 "body"  => "with ID " . $booking->book_id
             ],
             'data' => [
-                "DIRECT_ID" => 2
+                "DIRECT_ID" => 2,
+                "EXTRA_ID" => $booking->id
             ]
         ];
 
@@ -426,7 +428,8 @@ class BookingController extends ApiController
                 "body"  => "with ID " . $booking->book_id
             ],
             'data' => [
-                "DIRECT_ID" => 2
+                "DIRECT_ID" => 2,
+                "EXTRA_ID" => $booking->id
             ]
         ];
 

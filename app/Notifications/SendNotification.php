@@ -21,6 +21,10 @@ class SendNotification extends Notification
     public function __construct($notifdata)
     {
         $this->notifdata = $notifdata;
+        $messaging = app('firebase.messaging');
+        $message = CloudMessage::fromArray($this->notifdata);
+        $messaging->send($message);
+        return true;
     }
 
     /**
@@ -30,10 +34,6 @@ class SendNotification extends Notification
      */
     public function build()
     {
-        $messaging = app('firebase.messaging');
-        $message = CloudMessage::fromArray($this->notifdata);
-        $messaging->send($message);
-
-        return true;
+        //
     }
 }
