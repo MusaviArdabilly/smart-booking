@@ -7,8 +7,8 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-use App\Mail\BookingCheckOutMail;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendQueueMailJob;
+use App\Notifications\SendNotification;
 
 class BookingController extends Controller
 {
@@ -116,11 +116,33 @@ class BookingController extends Controller
             'duration'  => $duration,
             'checkin'   => $checkin,
             'checkout'  => $checkout,
+            'email'     => $email,
+            'markdown'  => 'mails.booking-checkout',
         ];
         try {
-            Mail::to($email)->send(new BookingCheckOutMail($maildata));
+            // Mail::to($email)->send(new BookingCheckOutMail($maildata));
+            $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+            dispatch($job);
         } catch (\Throwable $th) {
             $response_email = ', email';
+        }
+
+        $notifdata = [
+            'topic' => $booking->user->id,
+            'notification' => [
+                "title" => "You Check Out at " . $checkout . " by Admin",
+                "body"  => "with ID " . $booking->book_id
+            ],
+            'data' => [
+                "DIRECT_ID" => 2,
+                "EXTRA_ID" => $booking->id
+            ]
+        ];
+
+        try {
+            new SendNotification($notifdata);
+        } catch (\Throwable $th) {
+            return $this->sendResponse('Booking check in succesfully without notification', $th);
         }
 
         return response()->json(['message' => 'Status updated to Check Out successfully.']);
