@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use App\Models\Booking;
 use Carbon\Carbon;
 
-use App\Mail\BookingCheckOutNotification;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendQueueMailJob;
+use App\Notifications\SendNotification;
 
 class AutoCheckout extends Command
 {
@@ -68,11 +68,32 @@ class AutoCheckout extends Command
                 'duration'  => $duration,
                 'checkin'   => $checkin,
                 'checkout'  => $checkout,
+                'email'     => $email,
+                'markdown'  => 'mails.booking-checkout',
             ];
             try {
-                Mail::to($email)->send(new BookingCheckOutNotification($maildata));
+                $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+                dispatch($job);
             } catch (\Throwable $th) {
                 $response_email = ', email';
+            }
+
+            $notifdata = [
+                'topic' => $booking->user->id,
+                'notification' => [
+                    "title" => "You Booking has been Auto Checked Out",
+                    "body"  => "with ID " . $booking->book_id
+                ],
+                'data' => [
+                    "DIRECT_ID" => 2,
+                    "EXTRA_ID" => $booking->id
+                ]
+            ];
+
+            try {
+                new SendNotification($notifdata);
+            } catch (\Throwable $th) {
+                return $this->sendResponse('Booking created succesfully without notification', $th);
             }
         }
 

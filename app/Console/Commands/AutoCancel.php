@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use App\Models\Booking;
 use Carbon\Carbon;
 
-use App\Mail\BookingCancelNotification;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendQueueMailJob;
+use App\Notifications\SendNotification;
 
 class AutoCancel extends Command
 {
@@ -65,11 +65,32 @@ class AutoCancel extends Command
                 'desk'      => $desk,
                 'duration'  => $duration,
                 'cancel'    => $cancel,
+                'email'     => $email,
+                'markdown'  => 'mails.booking-cancel',
             ];
             try {
-                Mail::to($email)->send(new BookingCancelNotification($maildata));
+                $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+                dispatch($job);
             } catch (\Throwable $th) {
                 $response_email = ', email';
+            }
+
+            $notifdata = [
+                'topic' => $booking->user->id,
+                'notification' => [
+                    "title" => "Your Booking has been Auto Canceled",
+                    "body"  => "with ID " . $booking->book_id
+                ],
+                'data' => [
+                    "DIRECT_ID" => 2,
+                    "EXTRA_ID" => $booking->id
+                ]
+            ];
+
+            try {
+                new SendNotification($notifdata);
+            } catch (\Throwable $th) {
+                return $this->sendResponse('Booking cancel succesfully without notification', $th);
             }
         }
 
