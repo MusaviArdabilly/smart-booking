@@ -43,7 +43,7 @@ class DeskController extends ApiController
                 continue;
             }
 
-            $bookings = $desk->booking->where('date', $request->date);
+            $bookings = $desk->booking->where('date', $request->date)->whereIn('status', ['booked', 'checked-in']);
             $i = 0;
             $booked = [];
             foreach ($bookings as $booking) {
