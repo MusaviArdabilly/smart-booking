@@ -105,44 +105,46 @@ class BookingController extends Controller
         $booking->save();
 
         $email      = $booking->user->email;
-        $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
-        $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
-        $checkin    = $booking->time->checkin;
-        $checkout   = $booking->time->checkout;
-        $maildata = [
-            'title'     => 'You Checked Out by Admin',
-            'id'        => $booking->book_id,
-            'desk'      => $desk,
-            'duration'  => $duration,
-            'checkin'   => $checkin,
-            'checkout'  => $checkout,
-            'email'     => $email,
-            'markdown'  => 'mails.booking-checkout',
-        ];
-        try {
-            // Mail::to($email)->send(new BookingCheckOutMail($maildata));
-            $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
-            dispatch($job);
-        } catch (\Throwable $th) {
-            $response_email = ', email';
+        if ($booking->user->notification[4]->is_mail == 1) {
+            $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+            $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+            $checkin    = $booking->time->checkin;
+            $checkout   = $booking->time->checkout;
+            $maildata = [
+                'title'     => 'You Checked Out by Admin',
+                'id'        => $booking->book_id,
+                'desk'      => $desk,
+                'duration'  => $duration,
+                'checkin'   => $checkin,
+                'checkout'  => $checkout,
+                'email'     => $email,
+                'markdown'  => 'mails.booking-checkout',
+            ];
+            try {
+                $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+                dispatch($job);
+            } catch (\Throwable $th) {
+                $response_mail = false;
+            }
         }
 
-        $notifdata = [
-            'topic' => $booking->user->id,
-            'notification' => [
-                "title" => "You Check Out at " . $checkout . " by Admin",
-                "body"  => "with ID " . $booking->book_id
-            ],
-            'data' => [
-                "DIRECT_ID" => 2,
-                "EXTRA_ID" => $booking->id
-            ]
-        ];
-
-        try {
-            new SendNotification($notifdata);
-        } catch (\Throwable $th) {
-            return $this->sendResponse('Booking check in succesfully without notification', $th);
+        if ($booking->user->notification[4]->is_push == 1) {
+            $notifdata = [
+                'topic' => $booking->user->id,
+                'notification' => [
+                    "title" => "You Check Out at " . $checkout . " by Admin",
+                    "body"  => "with ID " . $booking->book_id
+                ],
+                'data' => [
+                    "DIRECT_ID" => 2,
+                    "EXTRA_ID" => $booking->id
+                ]
+            ];
+            try {
+                new SendNotification($notifdata);
+            } catch (\Throwable $th) {
+                $response_push = false;
+            }
         }
 
         return response()->json(['message' => 'Status updated to Check Out successfully.']);

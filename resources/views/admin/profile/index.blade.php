@@ -84,20 +84,25 @@
 
                 <div class="card-header">
                     <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-rate-tab" data-toggle="tab" href="#nav-rate" role="tab"
-                            aria-controls="nav-rate" aria-selected="true">
+                        <a class="nav-item nav-link active" id="nav-account-tab" data-toggle="tab" href="#nav-account"
+                            role="tab" aria-controls="nav-account" aria-selected="true">
                             <h6 class="m-0 font-weight-bold">Account Details</h6>
                         </a>
-                        <a class="nav-item nav-link" id="nav-interval-tab" data-toggle="tab" href="#nav-interval" role="tab"
-                            aria-controls="nav-rate" aria-selected="false">
+                        <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab" href="#nav-password" role="tab"
+                            aria-controls="nav-account" aria-selected="false">
                             <h6 class="m-0 font-weight-bold">Password Management</h6>
+                        </a>
+                        <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="#nav-notification"
+                            role="tab" aria-controls="nav-account" aria-selected="false">
+                            <h6 class="m-0 font-weight-bold">Notification Management</h6>
                         </a>
                     </div>
                 </div>
 
                 <div class="card-body">
                     <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-rate" role="tabpanel" aria-labelledby="nav-rate-tab">
+                        <div class="tab-pane fade show active" id="nav-account" role="tabpanel"
+                            aria-labelledby="nav-account-tab">
                             <div class="row">
                                 <div class="col">
                                     <form action="{{ route('profile.update', $user->id) }}" method="POST">
@@ -137,7 +142,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="nav-interval" role="tabpanel" aria-labelledby="nav-interval-tab">
+                        <div class="tab-pane fade" id="nav-password" role="tabpanel" aria-labelledby="nav-password-tab">
                             <div class="row">
                                 <div class="col">
                                     <form action="{{ route('profile.update', $user->id) }}" method="POST">
@@ -159,6 +164,126 @@
                                                     name="password_confirmation" required>
                                             </div>
                                         </div>
+                                        <div class="d-flex justify-content-end text-align-center flex-column flex-md-row">
+                                            <button type="submit"
+                                                class="btn btn-primary px-5"><strong>Save</strong></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-notification" role="tabpanel"
+                            aria-labelledby="nav-notification-tab">
+                            <div class="row">
+                                <div class="col">
+                                    <form action="{{ route('profile.update', $user->id) }}" method="POST" id="form">
+                                        @csrf
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <th>
+                                                    <strong>Notify me when</strong>
+                                                </th>
+                                                <th>Email</th>
+                                                <th>Push Notif</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="3">Booking</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Create a New Booking</td>
+                                                <td>
+                                                    <input type="checkbox" name="is_mail[]"
+                                                        value="{{ $user->notification[0]->is_mail }}"
+                                                        {{ $user->notification[0]->is_mail == '1' ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="is_push[]"
+                                                        value="{{ $user->notification[0]->is_push }}"
+                                                        {{ $user->notification[0]->is_push == '1' ? 'checked' : '' }}>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Check In</td>
+                                                <td>
+                                                    <input type="checkbox" name="is_mail[]"
+                                                        value="{{ $user->notification[1]->is_mail }}"
+                                                        {{ $user->notification[1]->is_mail == '1' ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="is_push[]"
+                                                        value="{{ $user->notification[1]->is_push }}"
+                                                        {{ $user->notification[1]->is_push == '1' ? 'checked' : '' }}>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Check Out</td>
+                                                <td>
+                                                    <input type="checkbox" name="is_mail[]"
+                                                        value="{{ $user->notification[2]->is_mail }}"
+                                                        {{ $user->notification[2]->is_mail == '1' ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="is_push[]"
+                                                        value="{{ $user->notification[2]->is_push }}"
+                                                        {{ $user->notification[2]->is_push == '1' ? 'checked' : '' }}>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Check Out by System</td>
+                                                <td>
+                                                    <input type="checkbox" name="is_mail[]"
+                                                        value="{{ $user->notification[3]->is_mail }}"
+                                                        {{ $user->notification[3]->is_mail == '1' ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="is_push[]"
+                                                        value="{{ $user->notification[3]->is_push }}"
+                                                        {{ $user->notification[3]->is_push == '1' ? 'checked' : '' }}>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Check Out by Admin</td>
+                                                <td>
+                                                    <input type="checkbox" name="is_mail[]"
+                                                        value="{{ $user->notification[4]->is_mail }}"
+                                                        {{ $user->notification[4]->is_mail == '1' ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="is_push[]"
+                                                        value="{{ $user->notification[4]->is_push }}"
+                                                        {{ $user->notification[4]->is_push == '1' ? 'checked' : '' }}>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cancel by System</td>
+                                                <td>
+                                                    <input type="checkbox" name="is_mail[]"
+                                                        value="{{ $user->notification[5]->is_mail }}"
+                                                        {{ $user->notification[5]->is_mail == '1' ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="is_push[]"
+                                                        value="{{ $user->notification[5]->is_push }}"
+                                                        {{ $user->notification[5]->is_push == '1' ? 'checked' : '' }}>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="3">Assessment</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Create a New Assessment</td>
+                                                <td>
+                                                    <input type="checkbox" name="is_mail[]"
+                                                        value="{{ $user->notification[6]->is_mail }}"
+                                                        {{ $user->notification[6]->is_mail == '1' ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="is_push[]"
+                                                        value="{{ $user->notification[6]->is_push }}"
+                                                        {{ $user->notification[6]->is_push == '1' ? 'checked' : '' }}>
+                                                </td>
+                                            </tr>
+                                        </table>
                                         <div class="d-flex justify-content-end text-align-center flex-column flex-md-row">
                                             <button type="submit"
                                                 class="btn btn-primary px-5"><strong>Save</strong></button>
@@ -261,5 +386,11 @@
                     }
                 });
             }
+
+            $("#form").on('submit', function() {
+                // to each unchecked checkbox
+                $(this).find('input[type=checkbox]:checked').prop('checked', true).val(1);
+                $(this).find('input[type=checkbox]:not(:checked)').prop('checked', true).val(0);
+            })
         </script>
     @endsection

@@ -81,6 +81,11 @@ class User extends Authenticatable implements HasMedia
             ->whereMonth('assessment_logs.created_at', Carbon::now()->month);
     }
 
+    public function notification()
+    {
+        return $this->hasMany('App\Models\Notification');
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')

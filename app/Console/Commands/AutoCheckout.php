@@ -57,43 +57,46 @@ class AutoCheckout extends Command
             $booking->save();
 
             $email      = $booking->user->email;
-            $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
-            $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
-            $checkin    = $booking->time->checkin;
-            $checkout   = $booking->time->checkout;
-            $maildata = [
-                'title'     => 'You Check Out',
-                'id'        => $booking->book_id,
-                'desk'      => $desk,
-                'duration'  => $duration,
-                'checkin'   => $checkin,
-                'checkout'  => $checkout,
-                'email'     => $email,
-                'markdown'  => 'mails.booking-checkout',
-            ];
-            try {
-                $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
-                dispatch($job);
-            } catch (\Throwable $th) {
-                $response_email = ', email';
+            if ($booking->user->notification[3]->is_mail == 1) {
+                $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+                $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+                $checkin    = $booking->time->checkin;
+                $checkout   = $booking->time->checkout;
+                $maildata = [
+                    'title'     => 'You Check Out',
+                    'id'        => $booking->book_id,
+                    'desk'      => $desk,
+                    'duration'  => $duration,
+                    'checkin'   => $checkin,
+                    'checkout'  => $checkout,
+                    'email'     => $email,
+                    'markdown'  => 'mails.booking-checkout',
+                ];
+                try {
+                    $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+                    dispatch($job);
+                } catch (\Throwable $th) {
+                    $response_mail = false;
+                }
             }
 
-            $notifdata = [
-                'topic' => $booking->user->id,
-                'notification' => [
-                    "title" => "You Booking has been Auto Checked Out",
-                    "body"  => "with ID " . $booking->book_id
-                ],
-                'data' => [
-                    "DIRECT_ID" => 2,
-                    "EXTRA_ID" => $booking->id
-                ]
-            ];
-
-            try {
-                new SendNotification($notifdata);
-            } catch (\Throwable $th) {
-                return $this->sendResponse('Booking created succesfully without notification', $th);
+            if ($booking->user->notification[3]->is_push == 1) {
+                $notifdata = [
+                    'topic' => $booking->user->id,
+                    'notification' => [
+                        "title" => "You Booking has been Auto Checked Out",
+                        "body"  => "with ID " . $booking->book_id
+                    ],
+                    'data' => [
+                        "DIRECT_ID" => 2,
+                        "EXTRA_ID" => $booking->id
+                    ]
+                ];
+                try {
+                    new SendNotification($notifdata);
+                } catch (\Throwable $th) {
+                    $response_push = false;
+                }
             }
         }
 

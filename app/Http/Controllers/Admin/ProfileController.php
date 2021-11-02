@@ -16,7 +16,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $user = User::where('username', '=', auth()->user()->username)->firstOrFail();
+        $user = User::where('username', '=', auth()->user()->username)->with('notification')->firstOrFail();
         return view('admin.profile.index')->with(compact('user'));
     }
 
@@ -63,6 +63,25 @@ class ProfileController extends Controller
             return redirect()->route('profile.index')
                 ->with('error', 'Old Password does not match');
         }
+
+        // notification update
+        if ($request->is_mail && $request->is_push) {
+            $user = User::with('notification')->findOrFail($user->id);
+
+            $is_mail = $request->is_mail;
+            $is_push = $request->is_push;
+            $i = 0;
+
+            foreach ($user->notification as $notification) {
+                $notification->is_mail  = $is_mail[$i];
+                $notification->is_push  = $is_push[$i++];
+                $user->notification()->save($notification);
+            }
+
+            return redirect()->route('profile.index')
+                ->with('success', 'Notification updated successfully');
+        }
+
 
         // rules validator
         if ($user->username != $request->username) {

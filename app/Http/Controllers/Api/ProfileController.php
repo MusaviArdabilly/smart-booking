@@ -78,6 +78,25 @@ class ProfileController extends ApiController
             return $this->sendInvalid('Old Password does not match', '');
         }
 
+        // notification update
+        if ($request->is_mail && $request->is_push) {
+            $user = User::with('notification')->findOrFail($user->id);
+
+            $is_mail = $request->is_mail;
+            $is_push = $request->is_push;
+            $i = 0;
+
+            foreach ($user->notification as $notification) {
+                $notification->is_mail  = $is_mail[$i];
+                $notification->is_push  = $is_push[$i++];
+                $user->notification()->save($notification);
+            }
+
+            unset($user->notification);
+
+            return $this->sendResponse('Notification updated succesfully', $user);
+        }
+
         // rules validator
         if ($user->username != $request->username) {
             // rules validator

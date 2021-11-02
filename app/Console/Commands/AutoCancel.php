@@ -56,41 +56,44 @@ class AutoCancel extends Command
             $booking->save();
 
             $email      = $booking->user->email;
-            $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
-            $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
-            $cancel     = $booking->updated_at;
-            $maildata = [
-                'title'     => 'Your Booking Canceled',
-                'id'        => $booking->book_id,
-                'desk'      => $desk,
-                'duration'  => $duration,
-                'cancel'    => $cancel,
-                'email'     => $email,
-                'markdown'  => 'mails.booking-cancel',
-            ];
-            try {
-                $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
-                dispatch($job);
-            } catch (\Throwable $th) {
-                $response_email = ', email';
+            if ($booking->user->notification[5]->is_mail == 1) {
+                $desk       = $booking->desk->sector->floor->name . ' / ' . $booking->desk->sector->name . ' / ' . $booking->desk->name;
+                $duration   = $booking->date . ', ' . $booking->time->start . '-' . $booking->time->end;
+                $cancel     = $booking->updated_at;
+                $maildata = [
+                    'title'     => 'Your Booking Canceled',
+                    'id'        => $booking->book_id,
+                    'desk'      => $desk,
+                    'duration'  => $duration,
+                    'cancel'    => $cancel,
+                    'email'     => $email,
+                    'markdown'  => 'mails.booking-cancel',
+                ];
+                try {
+                    $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+                    dispatch($job);
+                } catch (\Throwable $th) {
+                    $response_mail = false;
+                }
             }
 
-            $notifdata = [
-                'topic' => $booking->user->id,
-                'notification' => [
-                    "title" => "Your Booking has been Auto Canceled",
-                    "body"  => "with ID " . $booking->book_id
-                ],
-                'data' => [
-                    "DIRECT_ID" => 2,
-                    "EXTRA_ID" => $booking->id
-                ]
-            ];
-
-            try {
-                new SendNotification($notifdata);
-            } catch (\Throwable $th) {
-                return $this->sendResponse('Booking cancel succesfully without notification', $th);
+            if ($booking->user->notification[5]->is_mail == 1) {
+                $notifdata = [
+                    'topic' => $booking->user->id,
+                    'notification' => [
+                        "title" => "Your Booking has been Auto Canceled",
+                        "body"  => "with ID " . $booking->book_id
+                    ],
+                    'data' => [
+                        "DIRECT_ID" => 2,
+                        "EXTRA_ID" => $booking->id
+                    ]
+                ];
+                try {
+                    new SendNotification($notifdata);
+                } catch (\Throwable $th) {
+                    $response_push = false;
+                }
             }
         }
 

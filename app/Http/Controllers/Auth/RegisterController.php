@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Notification;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -73,12 +74,33 @@ class RegisterController extends Controller
         else
             $role = "user";
 
-        return User::create([
+        $user = User::create([
             'name'      => $data['name'],
             'username'  => $data['username'],
             'email'     => $data['email'],
             'password'  => Hash::make($data['password']),
             'role'      => $role,
         ]);
+
+        $types = [
+            'booking_create',
+            'booking_checkin',
+            'booking_checkout',
+            'booking_checkoutAuto',
+            'booking_checkoutAdmin',
+            'booking_cancel',
+            'assessment_create',
+        ];
+
+        foreach ($types as $type) {
+            // store new booking time
+            $notification = new Notification();
+            $notification->type     = $type;
+            $notification->is_mail  = 1;
+            $notification->is_push  = 1;
+            $user->notification()->save($notification);
+        }
+
+        return $user;
     }
 }

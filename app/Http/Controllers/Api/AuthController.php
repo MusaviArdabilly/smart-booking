@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +31,25 @@ class AuthController extends ApiController
             'password'  => Hash::make($request->password),
         ]);
         $user->token = $user->createToken(NULL)->accessToken;
+
+        $types = [
+            'booking_create',
+            'booking_checkin',
+            'booking_checkout',
+            'booking_checkoutAuto',
+            'booking_checkoutAdmin',
+            'booking_cancel',
+            'assessment_create',
+        ];
+
+        foreach ($types as $type) {
+            // store new booking time
+            $notification = new Notification();
+            $notification->type     = $type;
+            $notification->is_mail  = 1;
+            $notification->is_push  = 1;
+            $user->notification()->save($notification);
+        }
 
         return $this->sendResponse('User created successfully', $user);
     }
