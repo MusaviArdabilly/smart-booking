@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -143,4 +144,32 @@ class UserController extends Controller
         return redirect()->route('user.index')
             ->with('success', 'Floor deleted successfully');
     }
+
+    // public function notification()
+    // {
+    //     $users = User::all();
+
+    //     $types = [
+    //         'booking_create',
+    //         'booking_checkin',
+    //         'booking_checkout',
+    //         'booking_checkoutAuto',
+    //         'booking_checkoutAdmin',
+    //         'booking_cancel',
+    //         'assessment_create',
+    //     ];
+
+    //     foreach ($users as $user) {
+    //         foreach ($types as $type) {
+    //             // store new booking time
+    //             $notification = new Notification();
+    //             $notification->type     = $type;
+    //             $notification->is_mail  = 1;
+    //             $notification->is_push  = 1;
+    //             $user->notification()->save($notification);
+    //         }
+    //     }
+
+    //     return 'success';
+    // }
 }
