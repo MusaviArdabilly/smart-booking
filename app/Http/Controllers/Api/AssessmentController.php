@@ -22,6 +22,24 @@ class AssessmentController extends ApiController
      */
     public function index($user_id)
     {
+        $assessments = Assessment::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
+
+        // add some property
+        foreach ($assessments as $assessment) {
+            $media = $assessment->getMedia();
+            try {
+                $assessment->media_url = $assessment->media[0]->getUrl();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            unset($assessment->media);
+        }
+
+        return $this->sendResponse('Assessments listed succesfully', $assessments);
+    }
+
+    public function paginate($user_id)
+    {
         $assessments = Assessment::where('user_id', $user_id)->orderBy('created_at', 'desc')->paginate(10);
 
         // add some property
@@ -106,44 +124,44 @@ class AssessmentController extends ApiController
         }
 
         $email      = $assessment->user->email;
-        $created_at = Carbon::parse($assessment->created_at)->format('Y-m-d H:i:s');
-        $expires_at = Carbon::parse($assessment->expires_at)->format('Y-m-d H:i:s');
-        $maildata = [
-            'title'         => 'You created a new Assessment',
-            'id'            => $assessment->assess_id,
-            'point'         => $assessment->point,
-            'created_at'    => $created_at,
-            'expires_at'    => $expires_at,
-            'media_url'     => $media_url,
-            'email'         => $email,
-            'markdown'      => 'mails.assessment-created',
-        ];
-
-        try {
-            // Mail::to($email)->send(new AssessmentCreatedMail($maildata));
-            $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
-            dispatch($job);
-        } catch (\Throwable $th) {
-            $response_email = ', email';
-            return $this->sendResponse('Assessment created succesfully without email', $th);
+        if ($assessment->user->notification[6]->is_mail == 1) {
+            $created_at = Carbon::parse($assessment->created_at)->format('Y-m-d H:i:s');
+            $expires_at = Carbon::parse($assessment->expires_at)->format('Y-m-d H:i:s');
+            $maildata = [
+                'title'         => 'You created a new Assessment',
+                'id'            => $assessment->assess_id,
+                'point'         => $assessment->point,
+                'created_at'    => $created_at,
+                'expires_at'    => $expires_at,
+                'media_url'     => $media_url,
+                'email'         => $email,
+                'markdown'      => 'mails.assessment-created',
+            ];
+            try {
+                $job = (new SendQueueMailJob($maildata))->delay(now()->addSeconds(2));
+                dispatch($job);
+            } catch (\Throwable $th) {
+                $response_mail = false;
+            }
         }
 
-        $notifdata = [
-            'topic' => $assessment->user->id,
-            'notification' => [
-                "title" => "You created a new Assessment",
-                "body"  => "with ID " . $assessment->assess_id
-            ],
-            'data' => [
-                "DIRECT_ID" => 3,
-                "EXTRA_ID" => $assessment->id
-            ]
-        ];
-
-        try {
-            new SendNotification($notifdata);
-        } catch (\Throwable $th) {
-            return $this->sendResponse('Assessment created succesfully without notification', $th);
+        if ($assessment->user->notification[6]->is_mail == 1) {
+            $notifdata = [
+                'topic' => $assessment->user->id,
+                'notification' => [
+                    "title" => "You created a new Assessment",
+                    "body"  => "with ID " . $assessment->assess_id
+                ],
+                'data' => [
+                    "DIRECT_ID" => 3,
+                    "EXTRA_ID" => $assessment->id
+                ]
+            ];
+            try {
+                new SendNotification($notifdata);
+            } catch (\Throwable $th) {
+                $response_push = false;
+            }
         }
 
         return $this->sendResponse('Assessment created succesfully', $assessment);

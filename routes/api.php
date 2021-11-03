@@ -42,6 +42,7 @@ Route::get('desk/{sector}/list', [DeskController::class, 'index']);
 Route::post('booking', [BookingController::class, 'store']);
 Route::get('booking/{booking}', [BookingController::class, 'show']);
 Route::get('booking/{user}/list', [BookingController::class, 'index']);
+Route::get('booking/{user}/paginate', [BookingController::class, 'paginate']);
 Route::get('booking/{user}/list/today', [BookingController::class, 'today']);
 Route::patch('booking/{booking}/checkin', [BookingController::class, 'checkin']);
 Route::patch('booking/{booking}/checkout', [BookingController::class, 'checkout']);
@@ -49,5 +50,6 @@ Route::patch('booking/{booking}/checkout', [BookingController::class, 'checkout'
 Route::post('assessment', [AssessmentController::class, 'store']);
 Route::get('assessment/{assessment}', [AssessmentController::class, 'show']);
 Route::get('assessment/{user}/list', [AssessmentController::class, 'index']);
+Route::get('assessment/{user}/paginate', [AssessmentController::class, 'paginate']);
 Route::get('assessment/{user}/last', [AssessmentController::class, 'last']);
 Route::patch('assessment/{assessment}/verify', [AssessmentController::class, 'verify']);
