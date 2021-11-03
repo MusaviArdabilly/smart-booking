@@ -18,6 +18,7 @@ class ProfileController extends ApiController
      */
     public function show(User $user)
     {
+        $user = User::with('notification')->findOrFail($user->id);
         $media = $user->getMedia();
         try {
             if ($user->media[0]->hasGeneratedConversion('thumb')) {
