@@ -40,7 +40,7 @@
 
             <div class="row mb-4">
                 <div class="col">
-                    <canvas id="chart-usageperday" height="40px !important" width="100% !important">
+                    <canvas id="chart-activityMonth" height="40px !important" width="100% !important">
                 </div>
             </div>
 
@@ -111,6 +111,18 @@
                 </div>
             </div>
 
+            <div class="row mb-4">
+                <div class="col">
+                    <canvas id="chart-logMonth" height="40px !important" width="100% !important">
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col">
+                    <canvas id="chart-hourMonth" height="40px !important" width="100% !important">
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col">
                     <div class="card shadow mb-4">
@@ -153,13 +165,9 @@
 
 @section('script')
     <script type="text/javascript">
-        // today = new Date();
-        // document.getElementById('date').valueAsDate = today;
-        // date = today.toISOString().split('T')[0];
-
-        //chart per month
-        var ctx_day = document.getElementById("chart-usageperday");
-        var chartUsageperday = new Chart(ctx_day, {
+        //chart Activity per month
+        var ctx_day = document.getElementById("chart-activityMonth");
+        var chartActivityMonth = new Chart(ctx_day, {
             type: 'line',
             data: {
                 labels: [],
@@ -198,9 +206,9 @@
             }
         });
 
-        var updatePerDay = function() {
+        var updateActivityMonth = function() {
             $.ajax({
-                url: "{{ url('/synapsisperday') }}",
+                url: "{{ url('/activitymonth') }}",
                 type: 'GET',
                 dataType: 'json',
                 headers: {
@@ -208,11 +216,11 @@
                 },
                 success: function(data) {
                     console.log(data);
-                    chartUsageperday.data.labels = data.days;
+                    chartActivityMonth.data.labels = data.days;
                     // usage = data.usage.map(a => a.toFixed(4));
-                    chartUsageperday.data.datasets[0].data = data.bookings;
-                    chartUsageperday.data.datasets[1].data = data.assessments;
-                    chartUsageperday.update();
+                    chartActivityMonth.data.datasets[0].data = data.bookings;
+                    chartActivityMonth.data.datasets[1].data = data.assessments;
+                    chartActivityMonth.update();
                 },
                 error: function(data) {
                     console.log(data);
@@ -220,6 +228,116 @@
             });
         }
 
-        updatePerDay();
+        //chart Logs in a month
+        var ctx_day = document.getElementById("chart-logMonth");
+        var chartLogMonth = new Chart(ctx_day, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Assessment Scan',
+                    data: [],
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)'
+                }, {
+                    label: 'Booking Check In',
+                    data: [],
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)'
+                }, {
+                    label: 'Booking Check Out',
+                    data: [],
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(255, 255, 132, 0.2)',
+                    borderColor: 'rgba(255, 255, 132, 1)'
+                }, ],
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Usage'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Hour'
+                        }
+                    }],
+                }
+            }
+        });
+
+        //chart Logs in a month
+        var ctx_day = document.getElementById("chart-hourMonth");
+        var chartHourMonth = new Chart(ctx_day, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Booking Hour',
+                    data: [],
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)'
+                }, ],
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Usage'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Hour'
+                        }
+                    }],
+                }
+            }
+        });
+
+        var updateLogMonth = function() {
+            $.ajax({
+                url: "{{ url('/logmonth') }}",
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    console.log(data);
+                    chartLogMonth.data.labels = data.hours;
+                    // usage = data.usage.map(a => a.toFixed(4));
+                    chartLogMonth.data.datasets[0].data = data.logs;
+                    chartLogMonth.data.datasets[1].data = data.checkin;
+                    chartLogMonth.data.datasets[2].data = data.checkout;
+                    chartLogMonth.update();
+
+                    chartHourMonth.data.labels = data.hours;
+                    chartHourMonth.data.datasets[0].data = data.booking;
+                    chartHourMonth.update();
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        updateActivityMonth();
+        updateLogMonth();
     </script>
 @endsection

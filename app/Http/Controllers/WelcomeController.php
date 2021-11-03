@@ -7,6 +7,8 @@ use App\Models\Floor;
 use App\Models\Sector;
 use App\Models\Desk;
 use App\Models\User;
+use App\Models\Booking;
+use App\Models\AssessmentLog;
 use Illuminate\Support\Carbon;
 use Carbon\CarbonPeriod;
 use stdClass;
@@ -49,7 +51,7 @@ class WelcomeController extends Controller
         return view('synapsis', compact('most'));
     }
 
-    public function perday()
+    public function activityMonth()
     {
         $first_date = Carbon::now()->firstOfMonth()->format('Y-m-d');
         $last_date  = Carbon::now()->lastOfMonth()->endOfDay()->format('Y-m-d');
@@ -86,22 +88,67 @@ class WelcomeController extends Controller
                 $total_assessment = $total_assessment += $assessment->assessment_count;
             }
             $assessments[] = $total_assessment;
-
-            // $user_logs = User::withCount([
-            //     'assessmentLog',
-            //     'assessmentLog as assessment_log_count' => function ($query) use ($date) {
-            //         $query->whereDate('created_at', $date);
-            //     }
-            // ])->get();
-            // $total_log = 0;
-            // foreach ($user_logs as $log) {
-            //     $total_log = $total_log += $log->assessment_log_count;
-            // }
-            // $logs[] = $total_log;
-
-            // $most_logs = User::withCount('assessmentLog')->get();
         }
 
         return response()->json(compact('days', 'bookings', 'assessments'));
+    }
+
+    public function logMonth()
+    {
+        $first_date = Carbon::now()->firstOfMonth()->format('Y-m-d');
+        $last_date  = Carbon::now()->lastOfMonth()->endOfDay()->format('Y-m-d');
+        $period     = CarbonPeriod::create($first_date, $last_date);
+
+        $hours = [];
+
+        $i = 0;
+        while ($i < 24) {
+            $hours[] = $i;
+            $j = $i + 1;
+            $start = $i . ':00';
+            $end = $j . ':00';
+
+            $count_log = AssessmentLog::whereTime('created_at', '>=', $start)
+                ->whereTime('created_at', '<', $end)
+                ->whereDate('created_at', '>=', $first_date)
+                ->whereDate('created_at', '<=', $last_date)->count();
+            $logs[$i] = $count_log;
+
+            $count_checkin = Booking::whereDate('date', '>=', $first_date)
+                ->whereDate('date', '<=', $last_date)
+                ->whereHas('time', function ($query) use ($start, $end) {
+                    $query->whereTime('checkin', '>=', $start)
+                        ->whereTime('checkin', '<', $end);
+                })->count();
+            $checkin[$i] = $count_checkin;
+
+            $count_booking = Booking::whereDate('date', '>=', $first_date)
+                ->whereDate('date', '<=', $last_date)
+                ->whereHas('time', function ($query) use ($start, $end) {
+                    $query->whereTime('start', '<=', $start)
+                        ->whereTime('end', '>=', $end);
+                })->count();
+            $booking[$i] = $count_booking;
+
+            $count_checkout = Booking::whereDate('date', '>=', $first_date)
+                ->whereDate('date', '<=', $last_date)
+                ->whereHas('time', function ($query) use ($start, $end) {
+                    $query->whereTime('checkout', '>=', $start)
+                        ->whereTime('checkout', '<', $end);
+                })->count();
+            $checkout[$i] = $count_checkout;
+
+            $count_checkout = Booking::whereDate('date', '>=', $first_date)
+                ->whereDate('date', '<=', $last_date)
+                ->whereHas('time', function ($query) use ($start, $end) {
+                    $query->whereTime('checkout', '>=', $start)
+                        ->whereTime('checkout', '<', $end);
+                })->count();
+            $checkout[$i] = $count_checkout;
+
+            $i++;
+        }
+
+        return response()->json(compact('hours', 'logs', 'booking', 'checkin', 'checkout'));
     }
 }
