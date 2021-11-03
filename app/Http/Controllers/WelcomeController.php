@@ -105,22 +105,14 @@ class WelcomeController extends Controller
         while ($i < 24) {
             $hours[] = $i;
             $j = $i + 1;
-            $start = $i . ':00';
-            $end = $j . ':00';
+            $start = Carbon::parse('2021-01-01 ' . $i . ':00')->format('H:i');
+            $end = Carbon::parse('2021-01-01 ' . $j . ':00')->format('H:i');
 
             $count_log = AssessmentLog::whereTime('created_at', '>=', $start)
                 ->whereTime('created_at', '<', $end)
                 ->whereDate('created_at', '>=', $first_date)
                 ->whereDate('created_at', '<=', $last_date)->count();
             $logs[$i] = $count_log;
-
-            $count_checkin = Booking::whereDate('date', '>=', $first_date)
-                ->whereDate('date', '<=', $last_date)
-                ->whereHas('time', function ($query) use ($start, $end) {
-                    $query->whereTime('checkin', '>=', $start)
-                        ->whereTime('checkin', '<', $end);
-                })->count();
-            $checkin[$i] = $count_checkin;
 
             $count_booking = Booking::whereDate('date', '>=', $first_date)
                 ->whereDate('date', '<=', $last_date)
@@ -130,13 +122,13 @@ class WelcomeController extends Controller
                 })->count();
             $booking[$i] = $count_booking;
 
-            $count_checkout = Booking::whereDate('date', '>=', $first_date)
+            $count_checkin = Booking::whereDate('date', '>=', $first_date)
                 ->whereDate('date', '<=', $last_date)
                 ->whereHas('time', function ($query) use ($start, $end) {
-                    $query->whereTime('checkout', '>=', $start)
-                        ->whereTime('checkout', '<', $end);
+                    $query->whereTime('checkin', '>=', $start)
+                        ->whereTime('checkin', '<', $end);
                 })->count();
-            $checkout[$i] = $count_checkout;
+            $checkin[$i] = $count_checkin;
 
             $count_checkout = Booking::whereDate('date', '>=', $first_date)
                 ->whereDate('date', '<=', $last_date)
