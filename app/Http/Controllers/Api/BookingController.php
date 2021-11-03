@@ -38,6 +38,25 @@ class BookingController extends ApiController
         return $this->sendResponse('Bookings listed succesfully', $bookings);
     }
 
+    public function paginate($user_id)
+    {
+        $bookings = Booking::where('user_id', $user_id)->orderBy('created_at', 'desc')->paginate(10);
+
+        // add some property
+        foreach ($bookings as $booking) {
+            // get parent name
+            $booking->floor_name    = $booking->desk->sector->floor->name;
+            $booking->sector_name   = $booking->desk->sector->name;
+            $booking->desk_name     = $booking->desk->name;
+            unset($booking->desk);
+
+            // get time detail
+            $booking->time;
+        }
+
+        return $this->sendResponse('Bookings listed succesfully', $bookings);
+    }
+
     public function today($user_id)
     {
         $today = Carbon::today()->toDateString();
