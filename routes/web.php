@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\AssessmentController;
 
+use App\Http\Controllers\User\PageController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,7 +29,9 @@ use App\Http\Controllers\Admin\AssessmentController;
 |
 */
 
-Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+Route::get('/', [PageController::class, 'index']);
+
+Route::get('/admin', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/synapsis', [WelcomeController::class, 'synapsis']);
 Route::get('/activitymonth', [WelcomeController::class, 'activityMonth']);
 Route::get('/logmonth', [WelcomeController::class, 'logMonth']);
